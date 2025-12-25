@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:alfurqan/alfurqan.dart';
 import 'package:alfurqan/data/dart/types.dart';
+import 'package:html/parser.dart' as html;
+import 'database_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,19 +14,30 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedTab = 0; // 0: Surah, 1: Juz, 2: Bookmark
+  bool _isDarkMode = true; // Track theme mode
 
   List<Map<String, dynamic>> surahs = [];
   List<Map<String, dynamic>> juzs = [];
+  List<Map<String, dynamic>> bookmarks = [];
+  Map<String, dynamic>? lastRead;
+
+  final DatabaseHelper _dbHelper = DatabaseHelper();
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _loadJuzs(); // Load juzs immediately since they don't depend on locale
+    _loadBookmarks();
+    _loadLastRead();
   }
 
-  void _loadData() {
-    _loadSurahs();
-    _loadJuzs();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Load surahs here because it depends on locale from context
+    if (surahs.isEmpty) {
+      _loadSurahs();
+    }
   }
 
   void _loadSurahs() {
@@ -35,8 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
       final chapter = AlQuran.chapter(i);
       loadedSurahs.add({
         'number': chapter.id,
-        'name': chapter.nameSimple,
-        'translation': chapter.translatedName[currentLang] ?? chapter.nameSimple,
+        'name': _decodeHtmlEntities(chapter.nameSimple),
+        'translation': _decodeHtmlEntities(chapter.translatedName[currentLang] ?? chapter.nameSimple),
         'arabic': chapter.nameArabic,
         'verses': chapter.versesCount,
         'type': chapter.revelationPlace == ChapterRevelationPlace.makkah ? 'Makkiyah' : 'Madaniyah',
@@ -66,6 +79,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _loadBookmarks() async {
+    final loadedBookmarks = await _dbHelper.getBookmarks();
+    setState(() {
+      bookmarks = loadedBookmarks;
+    });
+  }
+
+  void _loadLastRead() async {
+    final loadedLastRead = await _dbHelper.getLastRead();
+    setState(() {
+      lastRead = loadedLastRead;
+    });
+  }
+
   String _getCurrentLanguageKey() {
     final locale = context.locale;
     switch (locale.languageCode) {
@@ -82,6 +109,28 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         return 'en';
     }
+  }
+
+  String _decodeHtmlEntities(String text) {
+    // Create a simple HTML document to decode entities
+    final document = html.parse('<div>$text</div>');
+    return document.body?.text ?? text;
+  }
+
+  String _toArabicNumerals(int number) {
+    const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return number.toString().split('').map((digit) => arabicDigits[int.parse(digit)]).join();
+  }
+
+  String _formatNumber(int number) {
+    final currentLang = _getCurrentLanguageKey();
+    return currentLang == 'ar' ? _toArabicNumerals(number) : number.toString();
+  }
+
+  void _toggleTheme() {
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+    });
   }
 
   void _switchLanguage() {
@@ -118,10 +167,187 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildLastReadCard() {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.bookmark,
+                    color: _getAccentColor(),
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'last_read'.tr(),
+                    style: TextStyle(
+                      color: _getSecondaryTextColor(),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                lastRead!['surah_name'],
+                style: TextStyle(
+                  color: _getTextColor(),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'verse'.tr(args: [lastRead!['verse_number'].toString()]),
+                style: TextStyle(
+                  color: _getSecondaryTextColor(),
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: Navigate to reading screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _getAccentColor(),
+                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('continue'.tr()),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.arrow_forward, size: 16),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+          ),
+          child: Icon(
+            Icons.local_library,
+            color: _getAccentColor().withValues(alpha: 0.3),
+            size: 40,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStartReadingCard() {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.play_circle,
+                    color: _getAccentColor(),
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'start_reading'.tr(),
+                    style: TextStyle(
+                      color: _getSecondaryTextColor(),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Al-Fatihah',
+                style: TextStyle(
+                  color: _getTextColor(),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'verse'.tr(args: ['1']),
+                style: TextStyle(
+                  color: _getSecondaryTextColor(),
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () async {
+                  // Save first verse as last read and navigate
+                  final verse = AlQuran.verse(1, 1);
+                  await _dbHelper.saveLastRead(1, 'Al-Fatihah', 1, verse.text);
+                  _loadLastRead();
+                  // TODO: Navigate to reading screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _getAccentColor(),
+                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('start'.tr()),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.play_arrow, size: 16),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+          ),
+          child: Icon(
+            Icons.menu_book,
+            color: _getAccentColor().withValues(alpha: 0.3),
+            size: 40,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getBackgroundColor() => _isDarkMode ? const Color(0xFF152111) : Colors.white;
+  Color _getSurfaceColor() => _isDarkMode ? const Color(0xFF1E261C) : const Color(0xFFF5F5F5);
+  Color _getBorderColor() => _isDarkMode ? const Color(0xFF42533C) : const Color(0xFFE0E0E0);
+  Color _getTextColor() => _isDarkMode ? Colors.white : const Color(0xFF2C2C2C);
+  Color _getSecondaryTextColor() => _isDarkMode ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF666666);
+  Color _getAccentColor() => const Color(0xFF4CE619);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF152111), // background-dark
+      backgroundColor: _getBackgroundColor(),
       body: SafeArea(
         child: Column(
           children: [
@@ -136,32 +362,43 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF4CE619).withValues(alpha: 0.1),
+                          color: _getAccentColor().withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.menu_book,
-                          color: Color(0xFF4CE619),
+                          color: _getAccentColor(),
                           size: 28,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Al-Quran Offline',
-                        style: const TextStyle(
+                        'Al-Quran',
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: _getTextColor(),
                         ),
                       ),
                     ],
                   ),
-                  IconButton(
-                    onPressed: _switchLanguage,
-                    icon: const Icon(
-                      Icons.language,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: _toggleTheme,
+                        icon: Icon(
+                          _isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                          color: _getTextColor(),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: _switchLanguage,
+                        icon: Icon(
+                          Icons.language,
+                          color: _getTextColor(),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -173,25 +410,25 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 height: 48,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E261C), // surface-dark
+                  color: _getSurfaceColor(),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: const Color(0xFF42533C)),
+                  border: Border.all(color: _getBorderColor()),
                 ),
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
                     Icon(
                       Icons.search,
-                      color: Colors.white.withValues(alpha: 0.6),
+                      color: _getSecondaryTextColor(),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: TextField(
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: _getTextColor()),
                         decoration: InputDecoration(
                           hintText: 'search_surah'.tr(),
                           hintStyle: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.4),
+                            color: _getSecondaryTextColor().withValues(alpha: 0.6),
                           ),
                           border: InputBorder.none,
                         ),
@@ -208,94 +445,17 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E261C),
+                  color: _getSurfaceColor(),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF42533C)),
+                  border: Border.all(color: _getBorderColor()),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.bookmark,
-                                color: const Color(0xFF4CE619),
-                                size: 16,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'last_read'.tr(),
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.6),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Al-Kahfi',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'verse_10'.tr(),
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.6),
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF4CE619),
-                              foregroundColor: const Color(0xFF152111),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('continue'.tr()),
-                                const SizedBox(width: 8),
-                                const Icon(Icons.arrow_forward, size: 16),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                      ),
-                      child: Icon(
-                        Icons.local_library,
-                        color: const Color(0xFF4CE619).withValues(alpha: 0.3),
-                        size: 40,
-                      ),
-                    ),
-                  ],
-                ),
+                child: lastRead != null ? _buildLastReadCard() : _buildStartReadingCard(),
               ),
             ),
 
             // Tabs
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
               child: Row(
                 children: [
                   _buildTab(0, 'surah'.tr()),
@@ -311,7 +471,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? _buildSurahList()
                   : _selectedTab == 1
                       ? _buildJuzList()
-                      : _buildPlaceholder('bookmark'),
+                      : _buildBookmarkList(),
             ),
           ],
         ),
@@ -329,7 +489,7 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: isSelected ? const Color(0xFF4CE619) : Colors.transparent,
+                color: isSelected ? _getAccentColor() : Colors.transparent,
                 width: 3,
               ),
             ),
@@ -338,7 +498,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: isSelected ? const Color(0xFF4CE619) : Colors.white.withValues(alpha: 0.6),
+              color: isSelected ? _getAccentColor() : _getSecondaryTextColor(),
               fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
@@ -358,26 +518,32 @@ class _HomeScreenState extends State<HomeScreen> {
           margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E261C),
+            color: _getSurfaceColor(),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF42533C)),
+            border: Border.all(color: _getBorderColor()),
           ),
           child: Row(
             children: [
               // Number Badge
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF4CE619).withValues(alpha: 0.3)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    '${surah['number']}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+              Transform.rotate(
+                angle: 45 * 3.14159 / 180, // 45 degrees in radians
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Transform.rotate(
+                      angle: -45 * 3.14159 / 180, // Rotate text back to readable position
+                      child: Text(
+                        _formatNumber(surah['number']),
+                        style: TextStyle(
+                          color: _getTextColor(),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -389,8 +555,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       surah['name'],
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: _getTextColor(),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -400,7 +566,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           surah['translation'],
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: _getSecondaryTextColor(),
                             fontSize: 12,
                           ),
                         ),
@@ -409,14 +575,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 4,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.4),
+                            color: _getSecondaryTextColor().withValues(alpha: 0.6),
                             shape: BoxShape.circle,
                           ),
                         ),
                         Text(
                           '${surah['verses']} ${'verses'.tr()}',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: _getSecondaryTextColor(),
                             fontSize: 12,
                           ),
                         ),
@@ -430,15 +596,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     surah['arabic'],
-                    style: const TextStyle(
-                      color: Color(0xFF4CE619),
+                    style: TextStyle(
+                      color: _getAccentColor(),
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   Icon(
                     surah['type'] == 'Makkiyah' ? Icons.mosque : Icons.location_city,
-                    color: Colors.white.withValues(alpha: 0.6),
+                    color: _getSecondaryTextColor(),
                     size: 16,
                   ),
                 ],
@@ -460,26 +626,32 @@ class _HomeScreenState extends State<HomeScreen> {
           margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E261C),
+            color: _getSurfaceColor(),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF42533C)),
+            border: Border.all(color: _getBorderColor()),
           ),
           child: Row(
             children: [
               // Number Badge
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF4CE619).withValues(alpha: 0.3)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    '${juz['number']}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+              Transform.rotate(
+                angle: 45 * 3.14159 / 180, // 45 degrees in radians
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Transform.rotate(
+                      angle: -45 * 3.14159 / 180, // Rotate text back to readable position
+                      child: Text(
+                        _formatNumber(juz['number']),
+                        style: TextStyle(
+                          color: _getTextColor(),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -491,8 +663,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       juz['name'],
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: _getTextColor(),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -502,7 +674,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           '${juz['chapters']} ${'chapters'.tr()}',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: _getSecondaryTextColor(),
                             fontSize: 12,
                           ),
                         ),
@@ -511,14 +683,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 4,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.4),
+                            color: _getSecondaryTextColor().withValues(alpha: 0.6),
                             shape: BoxShape.circle,
                           ),
                         ),
                         Text(
                           '${juz['verses']} ${'verses'.tr()}',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: _getSecondaryTextColor(),
                             fontSize: 12,
                           ),
                         ),
@@ -527,9 +699,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.book,
-                color: Color(0xFF4CE619),
+                color: _getAccentColor(),
                 size: 24,
               ),
             ],
@@ -539,12 +711,100 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildPlaceholder(String type) {
-    return Center(
-      child: Text(
-        '$type ${'coming_soon'.tr()}',
-        style: const TextStyle(color: Colors.white),
-      ),
+  Widget _buildBookmarkList() {
+    if (bookmarks.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.bookmark_border,
+              color: _getSecondaryTextColor().withValues(alpha: 0.3),
+              size: 64,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'no_bookmarks'.tr(),
+              style: TextStyle(
+                color: _getSecondaryTextColor(),
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      itemCount: bookmarks.length,
+      itemBuilder: (context, index) {
+        final bookmark = bookmarks[index];
+        return Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: _getSurfaceColor(),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: _getBorderColor()),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: _getAccentColor().withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.bookmark,
+                  color: _getAccentColor(),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${bookmark['surah_name']} - ${'verse'.tr(args: [bookmark['verse_number'].toString()])}',
+                      style: TextStyle(
+                        color: _getTextColor(),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      bookmark['verse_text'],
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: _getSecondaryTextColor(),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  await _dbHelper.removeBookmark(bookmark['id']);
+                  _loadBookmarks();
+                },
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
+
+
 }

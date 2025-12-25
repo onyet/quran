@@ -6,12 +6,16 @@
   "version": "Versi 1.0.0",
   "search_surah": "Cari Surah atau Ayat...",
   "last_read": "Terakhir Dibaca",
+  "start_reading": "Mulai Membaca",
   "verse_10": "Ayat 10",
+  "verse": "Ayat {{number}}",
   "continue": "Lanjut",
+  "start": "Mulai",
   "surah": "Surah",
   "juz": "Juz",
   "bookmark": "Bookmark",
   "verses": "Ayat",
   "chapters": "Surah",
-  "coming_soon": "Segera Hadir"
+  "coming_soon": "Segera Hadir",
+  "no_bookmarks": "Belum ada bookmark"
 }

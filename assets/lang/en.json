@@ -6,12 +6,16 @@
   "version": "Version 1.0.0",
   "search_surah": "Search Surah or Verse...",
   "last_read": "Last Read",
+  "start_reading": "Start Reading",
   "verse_10": "Verse 10",
+  "verse": "Verse {{number}}",
   "continue": "Continue",
+  "start": "Start",
   "surah": "Surah",
   "juz": "Juz",
   "bookmark": "Bookmark",
   "verses": "Verses",
   "chapters": "Chapters",
-  "coming_soon": "Coming Soon"
+  "coming_soon": "Coming Soon",
+  "no_bookmarks": "No bookmarks yet"
 }

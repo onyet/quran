@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'welcome_screen.dart';
 import 'home_screen.dart';
@@ -40,11 +41,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 3)); // Total duration
     if (!mounted) return;
 
-    final prefs = await SharedPreferences.getInstance();
-    final isFirstTime = prefs.getBool('first_time') ?? true;
+    // In debug mode, always show welcome screen
+    // In release mode, show welcome screen only on first time
+    final shouldShowWelcome = kDebugMode || (await _isFirstTime());
 
     if (!mounted) return;
-    if (isFirstTime) {
+    if (shouldShowWelcome) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const WelcomeScreen()),
       );
@@ -53,6 +55,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     }
+  }
+
+  Future<bool> _isFirstTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('first_time') ?? true;
   }
 
   @override
