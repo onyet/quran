@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'welcome_screen.dart';
+import 'splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  final isFirstTime = prefs.getBool('first_time') ?? true;
-  final showWelcome = isFirstTime || kDebugMode;
 
   runApp(
     EasyLocalization(
@@ -17,15 +12,13 @@ void main() async {
       path: 'assets/lang',
       fallbackLocale: const Locale('en'),
       startLocale: const Locale('en'),
-      child: MyApp(showWelcome: showWelcome),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final bool showWelcome;
-
-  const MyApp({super.key, required this.showWelcome});
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -53,7 +46,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4CE619)),
       ),
-      home: showWelcome ? const WelcomeScreen() : const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }

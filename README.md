@@ -1,6 +1,29 @@
-# quran
+# Quran App
 
-A new Flutter project.
+A Flutter application for reading the Quran with offline support and multi-language translations.
+
+## Features
+
+- Offline Quran verses and translations
+- Multi-language support (Indonesian, English, Turkish, French)
+- Welcome screen with language selection
+- Custom launcher icon and splash screen
+
+## Libraries Used
+
+This project uses the following libraries:
+
+- [alfurqan](https://pub.dev/packages/alfurqan) - Offline Quran verses, translations, juzs and chapters
+- [easy_localization](https://pub.dev/packages/easy_localization) - Easy and Fast internationalizing and localization
+- [shared_preferences](https://pub.dev/packages/shared_preferences) - Flutter plugin for reading and writing simple key-value pairs
+- [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) - A package which simplifies the task of updating your Flutter app's launcher icon
+- [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) - Automatically generates native code for adding splash screens in Android and iOS
+
+## Attributions
+
+- **App Icon**: Menu book icon from [IconScout](https://iconscout.com/icons/menu-book) (Free License)
+- **Fonts**: Inter font from Google Fonts
+- **Icons**: Material Symbols from Google Fonts
 
 ## Getting Started
 

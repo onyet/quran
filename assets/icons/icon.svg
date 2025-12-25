@@ -1,0 +1,13 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cover kiri -->
+  <rect x="2" y="4" width="8" height="16" rx="1" ry="1" fill="#4CE619"/>
+  <!-- Halaman kanan -->
+  <rect x="10" y="4" width="12" height="16" rx="1" ry="1" fill="white"/>
+  <!-- Garis di halaman kanan -->
+  <line x1="12" y1="8" x2="20" y2="8" stroke="#4CE619" stroke-width="1"/>
+  <line x1="12" y1="10" x2="20" y2="10" stroke="#4CE619" stroke-width="1"/>
+  <line x1="12" y1="12" x2="20" y2="12" stroke="#4CE619" stroke-width="1"/>
+  <line x1="12" y1="14" x2="20" y2="14" stroke="#4CE619" stroke-width="1"/>
+  <line x1="12" y1="16" x2="20" y2="16" stroke="#4CE619" stroke-width="1"/>
+</svg></content>
+<parameter name="filePath">/home/onyet/Public/CODE/ONYET-APP/quran/assets/icons/icon.svg

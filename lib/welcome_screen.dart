@@ -2,6 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class PatternPainter extends CustomPainter {
+  final double animationValue;
+
+  PatternPainter(this.animationValue);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF4CE619).withValues(alpha: 0.15)
+      ..style = PaintingStyle.fill;
+
+    const double radius = 1.0;
+    const double spacing = 32.0;
+
+    // Calculate offset based on animation
+    final double offset = animationValue * spacing;
+
+    for (double x = -offset; x < size.width + spacing; x += spacing) {
+      for (double y = -offset; y < size.height + spacing; y += spacing) {
+        // Add diagonal movement
+        final double adjustedX = x + (animationValue * spacing * 0.5);
+        final double adjustedY = y + (animationValue * spacing * 0.5);
+        canvas.drawCircle(Offset(adjustedX, adjustedY), radius, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(PatternPainter oldDelegate) => oldDelegate.animationValue != animationValue;
+}
+
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
 
@@ -9,8 +40,11 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
   String selectedLanguage = 'en'; // Default to English
+
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   final List<Map<String, String>> languages = [
     {'code': 'id', 'name': 'Bahasa Indonesia'},
@@ -18,6 +52,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     {'code': 'tr', 'name': 'Türkçe'},
     {'code': 'fr', 'name': 'Français'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 10),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   void _startApp() async {
     final prefs = await SharedPreferences.getInstance();
@@ -35,10 +86,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFF6F8F6), // background-light
+          color: const Color(0xFF152111), // background-dark
         ),
         child: Stack(
           children: [
+            // Background Pattern
+            AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return Positioned.fill(
+                  child: CustomPaint(
+                    painter: PatternPainter(_animation.value),
+                  ),
+                );
+              },
+            ),
             // Decorative Glow
             Positioned(
               top: -MediaQuery.of(context).size.height * 0.1,
@@ -87,22 +149,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ),
                         const SizedBox(height: 32),
                         // Text
-                        const Text(
+                        Text(
                           'welcome_title',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ).tr(),
                         const SizedBox(height: 16),
-                        const Text(
+                        Text(
                           'welcome_description',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey,
+                            color: Colors.white.withValues(alpha: 0.7),
                           ),
                         ).tr(),
                       ],
@@ -115,30 +177,38 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'select_language',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey,
+                              color: Colors.white,
                             ),
                           ).tr(),
                           const SizedBox(height: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: const Color(0xFF1E261C), // surface-dark
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade200),
+                              border: Border.all(color: const Color(0xFF42533C)), // border-dark
                             ),
                             child: DropdownButton<String>(
                               value: selectedLanguage,
                               isExpanded: true,
                               underline: const SizedBox(),
+                              dropdownColor: const Color(0xFF1E261C), // surface-dark
+                              style: const TextStyle(
+                                color: Colors.white, // text color for selected item
+                                fontSize: 16,
+                              ),
                               items: languages.map((lang) {
                                 return DropdownMenuItem(
                                   value: lang['code'],
-                                  child: Text(lang['name']!),
+                                  child: Text(
+                                    lang['name']!,
+                                    style: const TextStyle(color: Colors.white), // text color for items
+                                  ),
                                 );
                               }).toList(),
                               onChanged: (value) {
@@ -168,7 +238,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               'start_now',
                               style: TextStyle(
                                 fontSize: 18,
@@ -181,11 +251,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
+                      Text(
                         'version',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey,
+                          color: Colors.white.withValues(alpha: 0.5),
                         ),
                       ).tr(),
                     ],
