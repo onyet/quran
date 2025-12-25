@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Surah Detail - Quran App</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4ce619",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#152111", // Keeping the provided config dark
+                        "surface-dark": "#1e2a1b", // Slightly lighter for cards
+                        "surface-darker": "#11160f", // Darker background
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "arabic": ["Noto Sans Arabic", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3829;
+            border-radius: 3px;
+        }
+        .arabic-text {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            line-height: 2.5;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-x-hidden selection:bg-primary selection:text-black">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-black/5 dark:border-white/5">
+<div class="flex items-center justify-between px-4 py-3">
+<button aria-label="Go back" class="flex items-center justify-center size-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors -ml-2">
+<span class="material-symbols-outlined text-slate-700 dark:text-white">arrow_back_ios_new</span>
+</button>
+<div class="flex flex-col items-center flex-1 mx-2">
+<h1 class="text-lg font-bold leading-tight tracking-tight">Surah Al-Fatiha</h1>
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">The Opening</span>
+</div>
+<button aria-label="Search within Surah" class="flex items-center justify-center size-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors -mr-2">
+<span class="material-symbols-outlined text-slate-700 dark:text-white">search</span>
+</button>
+</div>
+<!-- Surah Meta Info -->
+<div class="px-4 pb-3 w-full">
+<div class="flex items-center justify-center gap-3 text-xs text-primary font-medium bg-primary/10 dark:bg-surface-dark py-1.5 px-4 rounded-full mx-auto w-max border border-primary/20">
+<span>7 Verses</span>
+<span class="size-1 rounded-full bg-current opacity-50"></span>
+<span>Meccan</span>
+</div>
+</div>
+</header>
+<!-- Content Container -->
+<main class="flex flex-col w-full max-w-lg mx-auto pb-24">
+<!-- Bismillah Header -->
+<div class="relative w-full h-48 sm:h-56 mt-4 px-4 flex justify-center items-center">
+<div class="absolute inset-0 mx-4 rounded-xl overflow-hidden shadow-lg border border-white/5">
+<!-- Gradient Background for Header -->
+<div class="absolute inset-0 bg-gradient-to-br from-surface-dark to-surface-darker opacity-100"></div>
+<div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#4ce619 1px, transparent 1px); background-size: 16px 16px;"></div>
+<!-- Calligraphy Image -->
+<div class="relative w-full h-full flex items-center justify-center p-6">
+<img alt="Arabic calligraphy of Bismillah ir-Rahman ir-Rahim" class="w-full h-auto max-h-[120px] invert dark:invert-0 opacity-90 drop-shadow-lg" data-alt="Arabic calligraphy of Bismillah ir-Rahman ir-Rahim" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVG42hFzSgHhrOjN-wVZyhwfmSYFhRw2r8gt7Utzs7QBo759Wq56fs5Wvn1pM6WOSwmxo5ASYb36lxX27cUuHhdVcdg4-OlN_ul4Lc9jqVYD_EvYWIxh6tZrqzmVnmA2-9oD-mGC0ScRVa2ORGPufpaGRYy5uxeoJZAB2uinLpGMBpZC6ifmfhfQz1pG2Avy_eXWKLQ85jafWGHp7vs7WVly8wY_dARuvZnjHB9oHWu9puQIP4WcGkVXAdmBNgTBlOtQ3U0PdLDCgS"/>
+</div>
+</div>
+</div>
+<!-- Spacer -->
+<div class="h-6"></div>
+<!-- Ayah List -->
+<div class="flex flex-col space-y-2">
+<!-- Ayah 1 -->
+<article class="group relative bg-white dark:bg-[#1a2318] hover:bg-slate-50 dark:hover:bg-[#1f2b1c] transition-colors border-y border-slate-100 dark:border-white/5">
+<div class="p-5 flex flex-col gap-6">
+<!-- Arabic Text Row -->
+<div class="flex justify-between items-start gap-4">
+<!-- Ayah Badge -->
+<div class="relative shrink-0 flex items-center justify-center size-10">
+<span class="material-symbols-outlined absolute text-primary text-[44px] font-thin">forward_10</span>
+<span class="relative text-xs font-bold text-slate-800 dark:text-white pt-0.5">1</span>
+</div>
+<!-- Arabic Script -->
+<p class="arabic-text text-3xl text-right font-semibold text-slate-800 dark:text-white leading-[2.5] dir-rtl w-full">
+                            الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ
+                        </p>
+</div>
+<!-- Translation (Hidden by default or toggled) -->
+<div class="pl-14 text-sm leading-relaxed text-slate-600 dark:text-[#a4b89d]">
+                        [All] praise is [due] to Allah, Lord of the worlds.
+                    </div>
+<!-- Action Bar -->
+<div class="pl-14 flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/5 mt-1">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-[#a4b89d] hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+<span>Mark</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-[#a4b89d] hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">translate</span>
+<span>Translate</span>
+</button>
+<div class="flex-1"></div>
+<button class="flex items-center justify-center size-8 rounded-full text-slate-400 dark:text-[#a4b89d] hover:bg-white/10 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Ayah 2 -->
+<article class="group relative bg-white dark:bg-[#1a2318] hover:bg-slate-50 dark:hover:bg-[#1f2b1c] transition-colors border-y border-slate-100 dark:border-white/5">
+<div class="p-5 flex flex-col gap-6">
+<div class="flex justify-between items-start gap-4">
+<div class="relative shrink-0 flex items-center justify-center size-10">
+<span class="material-symbols-outlined absolute text-primary/40 text-[44px] font-thin">forward_10</span>
+<span class="relative text-xs font-bold text-slate-800 dark:text-white pt-0.5">2</span>
+</div>
+<p class="arabic-text text-3xl text-right font-semibold text-slate-800 dark:text-white leading-[2.5] dir-rtl w-full">
+                            الرَّحْمَٰنِ الرَّحِيمِ
+                        </p>
+</div>
+<div class="pl-14 text-sm leading-relaxed text-slate-600 dark:text-[#a4b89d]">
+                        The Entirely Merciful, the Especially Merciful.
+                    </div>
+<div class="pl-14 flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/5 mt-1">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-primary bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[18px] fill-1">bookmark</span>
+<span>Saved</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-[#a4b89d] hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">translate</span>
+<span>Translate</span>
+</button>
+<div class="flex-1"></div>
+<button class="flex items-center justify-center size-8 rounded-full text-slate-400 dark:text-[#a4b89d] hover:bg-white/10 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Ayah 3 -->
+<article class="group relative bg-white dark:bg-[#1a2318] hover:bg-slate-50 dark:hover:bg-[#1f2b1c] transition-colors border-y border-slate-100 dark:border-white/5">
+<div class="p-5 flex flex-col gap-6">
+<div class="flex justify-between items-start gap-4">
+<div class="relative shrink-0 flex items-center justify-center size-10">
+<span class="material-symbols-outlined absolute text-primary/40 text-[44px] font-thin">forward_10</span>
+<span class="relative text-xs font-bold text-slate-800 dark:text-white pt-0.5">3</span>
+</div>
+<p class="arabic-text text-3xl text-right font-semibold text-slate-800 dark:text-white leading-[2.5] dir-rtl w-full">
+                            مَالِكِ يَوْمِ الدِّينِ
+                        </p>
+</div>
+<div class="pl-14 text-sm leading-relaxed text-slate-600 dark:text-[#a4b89d]">
+                        Sovereign of the Day of Recompense.
+                    </div>
+<div class="pl-14 flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/5 mt-1">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-[#a4b89d] hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+<span>Mark</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-[#a4b89d] hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">translate</span>
+<span>Translate</span>
+</button>
+<div class="flex-1"></div>
+<button class="flex items-center justify-center size-8 rounded-full text-slate-400 dark:text-[#a4b89d] hover:bg-white/10 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Ayah 4 -->
+<article class="group relative bg-white dark:bg-[#1a2318] hover:bg-slate-50 dark:hover:bg-[#1f2b1c] transition-colors border-y border-slate-100 dark:border-white/5">
+<div class="p-5 flex flex-col gap-6">
+<div class="flex justify-between items-start gap-4">
+<div class="relative shrink-0 flex items-center justify-center size-10">
+<span class="material-symbols-outlined absolute text-primary/40 text-[44px] font-thin">forward_10</span>
+<span class="relative text-xs font-bold text-slate-800 dark:text-white pt-0.5">4</span>
+</div>
+<p class="arabic-text text-3xl text-right font-semibold text-slate-800 dark:text-white leading-[2.5] dir-rtl w-full">
+                           إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ
+                        </p>
+</div>
+<div class="pl-14 text-sm leading-relaxed text-slate-600 dark:text-[#a4b89d]">
+                        It is You we worship and You we ask for help.
+                    </div>
+<div class="pl-14 flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/5 mt-1">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-[#a4b89d] hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+<span>Mark</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-[#a4b89d] hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">translate</span>
+<span>Translate</span>
+</button>
+<div class="flex-1"></div>
+<button class="flex items-center justify-center size-8 rounded-full text-slate-400 dark:text-[#a4b89d] hover:bg-white/10 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Bottom Action Sheet Example (Simulated) -->
+<!-- This would typically be a modal overlaid on the screen -->
+<div class="fixed bottom-0 left-0 right-0 z-50 p-4">
+<div class="bg-white dark:bg-[#1a2318] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-5 w-full max-w-lg mx-auto transform translate-y-0 transition-transform duration-300">
+<div class="flex justify-center mb-4">
+<div class="w-12 h-1 rounded-full bg-slate-200 dark:bg-white/10"></div>
+</div>
+<h3 class="text-lg font-bold mb-4 dark:text-white">Options for Ayah 2</h3>
+<div class="grid grid-cols-1 gap-3">
+<button class="flex items-center gap-4 w-full p-4 rounded-xl bg-slate-50 dark:bg-surface-darker hover:bg-slate-100 dark:hover:bg-black/40 transition-colors text-left group">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-black transition-colors">
+<span class="material-symbols-outlined">play_arrow</span>
+</div>
+<div class="flex-1">
+<div class="font-semibold dark:text-white">Play Audio</div>
+<div class="text-xs text-slate-500 dark:text-slate-400">Listen to recitation (Online)</div>
+</div>
+<span class="material-symbols-outlined text-slate-400">wifi</span>
+</button>
+<button class="flex items-center gap-4 w-full p-4 rounded-xl bg-slate-50 dark:bg-surface-darker hover:bg-slate-100 dark:hover:bg-black/40 transition-colors text-left group">
+<div class="size-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">image</span>
+</div>
+<div class="flex-1">
+<div class="font-semibold dark:text-white">Generate Image</div>
+<div class="text-xs text-slate-500 dark:text-slate-400">Create shareable quote</div>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</button>
+<button class="flex items-center gap-4 w-full p-4 rounded-xl bg-slate-50 dark:bg-surface-darker hover:bg-slate-100 dark:hover:bg-black/40 transition-colors text-left group">
+<div class="size-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">content_copy</span>
+</div>
+<div class="flex-1">
+<div class="font-semibold dark:text-white">Copy Text</div>
+<div class="text-xs text-slate-500 dark:text-slate-400">Copy Arabic or Translation</div>
+</div>
+</button>
+</div>
+<button class="w-full mt-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 font-medium hover:text-slate-900 dark:hover:text-white transition-colors">Cancel</button>
+</div>
+</div>
+<!-- Background overlay for modal -->
+<div class="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"></div>
+</body></html>
