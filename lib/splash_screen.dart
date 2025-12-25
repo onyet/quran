@@ -1,23 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'welcome_screen.dart';
-
-// Placeholder for HomeScreen
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quran App'),
-      ),
-      body: const Center(
-        child: Text('Home Screen'),
-      ),
-    );
-  }
-}
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

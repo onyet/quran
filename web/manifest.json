@@ -3,9 +3,9 @@
     "short_name": "quran",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#f6f8f6",
+    "background_color": "#152111",
     "theme_color": "#4ce619",
-    "description": "A new Flutter project.",
+    "description": "Read the Quran anywhere, anytime. Without internet connection.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

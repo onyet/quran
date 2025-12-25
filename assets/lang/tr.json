@@ -3,5 +3,15 @@
   "welcome_description": "Kur'an'ı her yerde, her zaman okuyun. İnternet bağlantısı olmadan.",
   "select_language": "Dil Seçin",
   "start_now": "Şimdi Başla",
-  "version": "Sürüm 1.0.0"
+  "version": "Sürüm 1.0.0",
+  "search_surah": "Sure veya Ayet Ara...",
+  "last_read": "Son Okunan",
+  "verse_10": "Ayet 10",
+  "continue": "Devam Et",
+  "surah": "Sure",
+  "juz": "Cüz",
+  "bookmark": "Yer İmi",
+  "verses": "Ayet",
+  "chapters": "Sure",
+  "coming_soon": "Yakında"
 }
