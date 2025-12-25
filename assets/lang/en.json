@@ -3,5 +3,14 @@
   "welcome_description": "Read the Quran anywhere, anytime. Without internet connection.",
   "select_language": "Select Language",
   "start_now": "Start Now",
-  "version": "Version 1.0.0"
+  "version": "Version 1.0.0",
+  "search_surah": "Search Surah or Verse...",
+  "last_read": "Last Read",
+  "verse_10": "Verse 10",
+  "continue": "Continue",
+  "surah": "Surah",
+  "juz": "Juz",
+  "bookmark": "Bookmark",
+  "verses": "Verses",
+  "coming_soon": "Coming Soon"
 }

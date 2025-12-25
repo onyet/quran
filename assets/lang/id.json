@@ -3,5 +3,14 @@
   "welcome_description": "Baca Al-Quran di mana saja, kapan saja. Tanpa koneksi internet.",
   "select_language": "Pilih Bahasa",
   "start_now": "Mulai Sekarang",
-  "version": "Versi 1.0.0"
+  "version": "Versi 1.0.0",
+  "search_surah": "Cari Surah atau Ayat...",
+  "last_read": "Terakhir Dibaca",
+  "verse_10": "Ayat 10",
+  "continue": "Lanjut",
+  "surah": "Surah",
+  "juz": "Juz",
+  "bookmark": "Bookmark",
+  "verses": "Ayat",
+  "coming_soon": "Segera Hadir"
 }

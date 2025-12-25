@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'home_screen.dart';
 
 class PatternPainter extends CustomPainter {
   final double animationValue;
@@ -51,6 +52,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     {'code': 'en', 'name': 'English'},
     {'code': 'tr', 'name': 'Türkçe'},
     {'code': 'fr', 'name': 'Français'},
+    {'code': 'ar', 'name': 'العربية'},
   ];
 
   @override
@@ -62,6 +64,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     )..repeat(reverse: true);
 
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Load selected language from current locale
+    selectedLanguage = context.locale.languageCode;
   }
 
   @override
@@ -265,23 +274,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// Placeholder for HomeScreen
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quran App'),
-      ),
-      body: const Center(
-        child: Text('Home Screen'),
       ),
     );
   }
