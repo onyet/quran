@@ -8,7 +8,7 @@
   "last_read": "Terakhir Dibaca",
   "start_reading": "Mulai Membaca",
   "verse_10": "Ayat 10",
-  "verse": "Ayat {{number}}",
+  "verse": "Ayat {{0}}",
   "continue": "Lanjut",
   "start": "Mulai",
   "surah": "Surah",

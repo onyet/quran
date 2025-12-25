@@ -161,6 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
         // Reload data when language changes
         Future.delayed(const Duration(milliseconds: 100), () {
           _loadSurahs();
+          _loadBookmarks();
+          _loadLastRead();
         });
         Navigator.of(context).pop();
       },
@@ -202,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                'verse'.tr(args: [lastRead!['verse_number'].toString()]),
+                'verse'.tr(args: [_formatNumber(lastRead!['verse_number'])]),
                 style: TextStyle(
                   color: _getSecondaryTextColor(),
                   fontSize: 14,
@@ -285,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                'verse'.tr(args: ['1']),
+                'verse'.tr(args: [_formatNumber(1)]),
                 style: TextStyle(
                   color: _getSecondaryTextColor(),
                   fontSize: 14,
@@ -337,12 +339,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Color _getAccentColor() => _isDarkMode ? const Color(0xFF4CE619) : const Color(0xFF2C2C2C);
+
   Color _getBackgroundColor() => _isDarkMode ? const Color(0xFF152111) : Colors.white;
   Color _getSurfaceColor() => _isDarkMode ? const Color(0xFF1E261C) : const Color(0xFFF5F5F5);
   Color _getBorderColor() => _isDarkMode ? const Color(0xFF42533C) : const Color(0xFFE0E0E0);
   Color _getTextColor() => _isDarkMode ? Colors.white : const Color(0xFF2C2C2C);
   Color _getSecondaryTextColor() => _isDarkMode ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF666666);
-  Color _getAccentColor() => const Color(0xFF4CE619);
 
   @override
   Widget build(BuildContext context) {
@@ -580,7 +583,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Text(
-                          '${surah['verses']} ${'verses'.tr()}',
+                          '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
                           style: TextStyle(
                             color: _getSecondaryTextColor(),
                             fontSize: 12,
@@ -672,7 +675,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       children: [
                         Text(
-                          '${juz['chapters']} ${'chapters'.tr()}',
+                          '${_formatNumber(juz['chapters'])} ${'chapters'.tr()}',
                           style: TextStyle(
                             color: _getSecondaryTextColor(),
                             fontSize: 12,
@@ -688,7 +691,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Text(
-                          '${juz['verses']} ${'verses'.tr()}',
+                          '${_formatNumber(juz['verses'])} ${'verses'.tr()}',
                           style: TextStyle(
                             color: _getSecondaryTextColor(),
                             fontSize: 12,
@@ -769,7 +772,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${bookmark['surah_name']} - ${'verse'.tr(args: [bookmark['verse_number'].toString()])}',
+                      '${bookmark['surah_name']} - ${'verse'.tr(args: [_formatNumber(bookmark['verse_number'])])}',
                       style: TextStyle(
                         color: _getTextColor(),
                         fontSize: 16,
