@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:alfurqan/alfurqan.dart';
 import 'package:alfurqan/data/dart/types.dart';
-import 'package:html/parser.dart' as html;
 import 'database_helper.dart';
+import 'search_page.dart';
+import 'utils.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback? onToggleTheme;
+  final ThemeMode? themeMode;
+
+  const HomeScreen({super.key, this.onToggleTheme, this.themeMode});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -14,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedTab = 0; // 0: Surah, 1: Juz, 2: Bookmark
-  bool _isDarkMode = true; // Track theme mode
 
   List<Map<String, dynamic>> surahs = [];
   List<Map<String, dynamic>> juzs = [];
@@ -94,43 +97,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String _getCurrentLanguageKey() {
-    final locale = context.locale;
-    switch (locale.languageCode) {
-      case 'id':
-        return 'id';
-      case 'en':
-        return 'en';
-      case 'tr':
-        return 'tr';
-      case 'fr':
-        return 'fr';
-      case 'ar':
-        return 'ar';
-      default:
-        return 'en';
-    }
+    return AppUtils.getCurrentLanguageCode(context);
   }
 
   String _decodeHtmlEntities(String text) {
-    // Create a simple HTML document to decode entities
-    final document = html.parse('<div>$text</div>');
-    return document.body?.text ?? text;
-  }
-
-  String _toArabicNumerals(int number) {
-    const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    return number.toString().split('').map((digit) => arabicDigits[int.parse(digit)]).join();
+    return AppUtils.decodeHtmlEntities(text);
   }
 
   String _formatNumber(int number) {
     final currentLang = _getCurrentLanguageKey();
-    return currentLang == 'ar' ? _toArabicNumerals(number) : number.toString();
+    return AppUtils.formatNumber(number, currentLang);
   }
 
   void _toggleTheme() {
-    setState(() {
-      _isDarkMode = !_isDarkMode;
-    });
+    widget.onToggleTheme?.call();
+    setState(() {});
   }
 
   void _switchLanguage() {
@@ -218,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
-                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                  foregroundColor: widget.themeMode == ThemeMode.dark ? const Color(0xFF152111) : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -239,9 +220,9 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+            border: Border.all(color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
           ),
           child: Icon(
             Icons.local_library,
@@ -305,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
-                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                  foregroundColor: widget.themeMode == ThemeMode.dark ? const Color(0xFF152111) : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -326,9 +307,9 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+            border: Border.all(color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
           ),
           child: Icon(
             Icons.menu_book,
@@ -340,17 +321,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Color _getAccentColor() => _isDarkMode ? const Color(0xFF4CE619) : const Color(0xFF2C2C2C);
+  Color _getAccentColor() => AppUtils.getAccentColor(context, widget.themeMode);
 
-  Color _getBackgroundColor() => _isDarkMode ? const Color(0xFF152111) : Colors.white;
-  Color _getSurfaceColor() => _isDarkMode ? const Color(0xFF1E261C) : const Color(0xFFF5F5F5);
-  Color _getBorderColor() => _isDarkMode ? const Color(0xFF42533C) : const Color(0xFFE0E0E0);
-  Color _getTextColor() => _isDarkMode ? Colors.white : const Color(0xFF2C2C2C);
-  Color _getSecondaryTextColor() => _isDarkMode ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF666666);
+  Color _getBackgroundColor() => AppUtils.getBackgroundColor(context, widget.themeMode);
+  Color _getSurfaceColor() => AppUtils.getSurfaceColor(context, widget.themeMode);
+  Color _getBorderColor() => AppUtils.getBorderColor(context, widget.themeMode);
+  Color _getTextColor() => AppUtils.getTextColor(context, widget.themeMode);
+  Color _getSecondaryTextColor() => AppUtils.getSecondaryTextColor(context, widget.themeMode);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: ValueKey('home_scaffold_${widget.themeMode}'),
       backgroundColor: _getBackgroundColor(),
       body: SafeArea(
         child: Column(
@@ -391,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         onPressed: _toggleTheme,
                         icon: Icon(
-                          _isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                          widget.themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode,
                           color: _getTextColor(),
                         ),
                       ),
@@ -411,34 +393,39 @@ class _HomeScreenState extends State<HomeScreen> {
             // Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: Container(
-                height: 48,
-                decoration: BoxDecoration(
-                  color: _getSurfaceColor(),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: _getBorderColor()),
-                ),
-                child: Row(
-                  children: [
-                    const SizedBox(width: 16),
-                    Icon(
-                      Icons.search,
-                      color: _getSecondaryTextColor(),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SearchPage(themeMode: widget.themeMode),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: TextField(
-                        style: TextStyle(color: _getTextColor()),
-                        decoration: InputDecoration(
-                          hintText: 'search_surah'.tr(),
-                          hintStyle: TextStyle(
+                  );
+                },
+                child: Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: _getSurfaceColor(),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: _getBorderColor()),
+                  ),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 16),
+                      Icon(
+                        Icons.search,
+                        color: _getSecondaryTextColor(),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'search_surah'.tr(),
+                          style: TextStyle(
                             color: _getSecondaryTextColor().withValues(alpha: 0.6),
                           ),
-                          border: InputBorder.none,
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

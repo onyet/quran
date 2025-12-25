@@ -35,7 +35,10 @@ class PatternPainter extends CustomPainter {
 }
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+  final VoidCallback? onToggleTheme;
+  final ThemeMode? themeMode;
+
+  const WelcomeScreen({super.key, this.onToggleTheme, this.themeMode});
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
@@ -85,7 +88,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     if (mounted) {
       // Navigate to home screen
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            key: ValueKey('home_${widget.themeMode}'),
+            onToggleTheme: widget.onToggleTheme,
+            themeMode: widget.themeMode,
+          ),
+        ),
       );
     }
   }

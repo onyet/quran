@@ -17,5 +17,10 @@
   "verses": "Versets",
   "chapters": "Sourates",
   "coming_soon": "Bientôt disponible",
-  "no_bookmarks": "Aucun signet pour le moment"
+  "no_bookmarks": "Aucun signet pour le moment",
+  "no_results": "Aucun résultat",
+  "surah_matches": "Sourate ({0})",
+  "verse_matches": "Versets ({0})",
+  "matches": "Résultats",
+  "bookmarked": "Marqué"
 }

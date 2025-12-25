@@ -5,7 +5,10 @@ import 'welcome_screen.dart';
 import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final VoidCallback? onToggleTheme;
+  final ThemeMode? themeMode;
+
+  const SplashScreen({super.key, this.onToggleTheme, this.themeMode});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -48,11 +51,22 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (!mounted) return;
     if (shouldShowWelcome) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        MaterialPageRoute(
+          builder: (context) => WelcomeScreen(
+            onToggleTheme: widget.onToggleTheme,
+            themeMode: widget.themeMode,
+          ),
+        ),
       );
     } else {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            key: ValueKey('home_${widget.themeMode}'),
+            onToggleTheme: widget.onToggleTheme,
+            themeMode: widget.themeMode,
+          ),
+        ),
       );
     }
   }

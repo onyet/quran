@@ -17,5 +17,10 @@
   "verses": "Verses",
   "chapters": "Chapters",
   "coming_soon": "Coming Soon",
-  "no_bookmarks": "No bookmarks yet"
+  "no_bookmarks": "No bookmarks yet",
+  "no_results": "No results",
+  "surah_matches": "Surah ({0})",
+  "verse_matches": "Verses ({0})",
+  "matches": "Matches",
+  "bookmarked": "Bookmarked"
 }

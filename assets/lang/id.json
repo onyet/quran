@@ -17,5 +17,10 @@
   "verses": "Ayat",
   "chapters": "Surah",
   "coming_soon": "Segera Hadir",
-  "no_bookmarks": "Belum ada bookmark"
+  "no_bookmarks": "Belum ada bookmark",
+  "no_results": "Tidak ada hasil",
+  "surah_matches": "Surah ({0})",
+  "verse_matches": "Ayat ({0})",
+  "matches": "Hasil",
+  "bookmarked": "Ditandai"
 }

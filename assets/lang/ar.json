@@ -17,5 +17,10 @@
   "verses": "آيات",
   "chapters": "سور",
   "coming_soon": "قريباً",
-  "no_bookmarks": "لا توجد إشارات مرجعية بعد"
+  "no_bookmarks": "لا توجد إشارات مرجعية بعد",
+  "no_results": "لا توجد نتائج",
+  "surah_matches": "سورة ({0})",
+  "verse_matches": "آيات ({0})",
+  "matches": "نتائج",
+  "bookmarked": "تم وضع إشارة مرجعية"
 }

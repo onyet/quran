@@ -17,5 +17,10 @@
   "verses": "Ayet",
   "chapters": "Sure",
   "coming_soon": "Yakında",
-  "no_bookmarks": "Henüz yer imi yok"
+  "no_bookmarks": "Henüz yer imi yok",
+  "no_results": "Sonuç yok",
+  "surah_matches": "Sure ({0})",
+  "verse_matches": "Ayet ({0})",
+  "matches": "Sonuçlar",
+  "bookmarked": "Yer imi eklendi"
 }

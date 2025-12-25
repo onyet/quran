@@ -48,6 +48,17 @@ class DatabaseHelper {
         updated_at TEXT NOT NULL
       )
     ''');
+
+    // Create settings table
+    await db.execute('''
+      CREATE TABLE settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    ''');
+
+    // Insert default theme setting
+    await db.insert('settings', {'key': 'isDarkMode', 'value': 'true'});
   }
 
   // Bookmark methods
@@ -108,5 +119,26 @@ class DatabaseHelper {
   Future<int> clearLastRead() async {
     final db = await database;
     return await db.delete('last_read');
+  }
+
+  // Settings methods
+  Future<void> saveSetting(String key, String value) async {
+    final db = await database;
+    await db.insert(
+      'settings',
+      {'key': key, 'value': value},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<String?> getSetting(String key) async {
+    final db = await database;
+    final result = await db.query(
+      'settings',
+      where: 'key = ?',
+      whereArgs: [key],
+      limit: 1,
+    );
+    return result.isNotEmpty ? result.first['value'] as String : null;
   }
 }
