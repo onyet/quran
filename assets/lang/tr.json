@@ -7,7 +7,7 @@
   "search_surah": "Sure veya Ayet Ara...",
   "last_read": "Son Okunan",
   "start_reading": "Okumaya Başla",
-  "verse": "Ayet {{0}}",
+  "verse": "Ayet {number}",
   "start": "Başla",
   "verse_10": "Ayet 10",
   "continue": "Devam Et",
@@ -16,5 +16,6 @@
   "bookmark": "Yer İmi",
   "verses": "Ayet",
   "chapters": "Sure",
-  "coming_soon": "Yakında"
+  "coming_soon": "Yakında",
+  "no_bookmarks": "Henüz yer imi yok"
 }

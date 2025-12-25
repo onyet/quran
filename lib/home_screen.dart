@@ -158,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: Text(name),
       onTap: () {
         context.setLocale(Locale(code));
+        setState(() {}); // Force rebuild to update translations
         // Reload data when language changes
         Future.delayed(const Duration(milliseconds: 100), () {
           _loadSurahs();
@@ -204,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                'verse'.tr(args: [_formatNumber(lastRead!['verse_number'])]),
+                'verse'.tr(namedArgs: {'number': _formatNumber(lastRead!['verse_number'])}),
                 style: TextStyle(
                   color: _getSecondaryTextColor(),
                   fontSize: 14,
@@ -287,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                'verse'.tr(args: [_formatNumber(1)]),
+                'verse'.tr(namedArgs: {'number': _formatNumber(1)}),
                 style: TextStyle(
                   color: _getSecondaryTextColor(),
                   fontSize: 14,
@@ -772,7 +773,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${bookmark['surah_name']} - ${'verse'.tr(args: [_formatNumber(bookmark['verse_number'])])}',
+                      '${bookmark['surah_name']} - ${'verse'.tr(namedArgs: {'number': _formatNumber(bookmark['verse_number'])})}',
                       style: TextStyle(
                         color: _getTextColor(),
                         fontSize: 16,

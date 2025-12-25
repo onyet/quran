@@ -7,7 +7,7 @@
   "search_surah": "البحث في السور أو الآيات...",
   "last_read": "آخر قراءة",
   "start_reading": "ابدأ القراءة",
-  "verse": "الآية {{0}}",
+  "verse": "الآية {number}",
   "start": "ابدأ",
   "verse_10": "الآية 10",
   "continue": "متابعة",
@@ -16,5 +16,6 @@
   "bookmark": "علامة مرجعية",
   "verses": "آيات",
   "chapters": "سور",
-  "coming_soon": "قريباً"
+  "coming_soon": "قريباً",
+  "no_bookmarks": "لا توجد إشارات مرجعية بعد"
 }

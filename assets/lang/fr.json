@@ -7,7 +7,7 @@
   "search_surah": "Rechercher Soura ou Verset...",
   "last_read": "Dernière lecture",
   "start_reading": "Commencer la lecture",
-  "verse": "Verset {{0}}",
+  "verse": "Verset {number}",
   "start": "Commencer",
   "verse_10": "Verset 10",
   "continue": "Continuer",
@@ -16,5 +16,6 @@
   "bookmark": "Marque-page",
   "verses": "Versets",
   "chapters": "Sourates",
-  "coming_soon": "Bientôt disponible"
+  "coming_soon": "Bientôt disponible",
+  "no_bookmarks": "Aucun signet pour le moment"
 }

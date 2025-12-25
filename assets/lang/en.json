@@ -8,7 +8,7 @@
   "last_read": "Last Read",
   "start_reading": "Start Reading",
   "verse_10": "Verse 10",
-  "verse": "Verse {{0}}",
+  "verse": "Verse {number}",
   "continue": "Continue",
   "start": "Start",
   "surah": "Surah",
