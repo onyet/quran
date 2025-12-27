@@ -23,11 +23,11 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
-group = "com.onyet.quran"
+group = "id.onyet.app.quran"
 version = "1.0"
 
 android {
-    namespace = "com.onyet.quran"
+    namespace = "id.onyet.app.quran"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
