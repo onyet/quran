@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadJuzs(); // Load juzs immediately since they don't depend on locale
+    // _loadJuzs(); // Moved to didChangeDependencies
     _loadBookmarks();
     _loadLastRead();
   }
@@ -38,6 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
     // Load surahs here because it depends on locale from context
     if (surahs.isEmpty) {
       _loadSurahs();
+    }
+    // Load juzs here as well since it now depends on locale for translation
+    if (juzs.isEmpty) {
+      _loadJuzs();
     }
   }
 
@@ -69,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final juz = AlQuran.juz(juzNumber: i);
       loadedJuzs.add({
         'number': i,
-        'name': 'Juz $i',
+        'name': '${'juz'.tr()} ${_formatNumber(i)}',
         'verses': juz.verse.count,
         'chapters': juz.verse.items.length,
       });
@@ -142,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // Reload data when language changes
         Future.delayed(const Duration(milliseconds: 100), () {
           _loadSurahs();
+          _loadJuzs();
           _loadBookmarks();
           _loadLastRead();
         });
@@ -552,31 +557,41 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Row(
-                      children: [
-                        Text(
-                          surah['translation'],
-                          style: TextStyle(
-                            color: _getSecondaryTextColor(),
-                            fontSize: 12,
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          width: 4,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: _getSecondaryTextColor().withValues(alpha: 0.6),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        Text(
-                          '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
-                          style: TextStyle(
-                            color: _getSecondaryTextColor(),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
+                      children: _getCurrentLanguageKey() == 'ar'
+                          ? [
+                              Text(
+                                '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
+                                style: TextStyle(
+                                  color: _getSecondaryTextColor(),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ]
+                          : [
+                              Text(
+                                surah['translation'],
+                                style: TextStyle(
+                                  color: _getSecondaryTextColor(),
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                width: 4,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: _getSecondaryTextColor().withValues(alpha: 0.6),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              Text(
+                                '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
+                                style: TextStyle(
+                                  color: _getSecondaryTextColor(),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                     ),
                   ],
                 ),
