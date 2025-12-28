@@ -6,13 +6,7 @@ import 'splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize sqflite for desktop platforms
-  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
-    // For desktop platforms, we need to handle database differently
-    // but for now, let's skip the initialization and handle it in database_helper
-  }
-  
+
   await EasyLocalization.ensureInitialized();
 
   runApp(
@@ -41,18 +35,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     // _loadThemeMode(); // Temporarily disabled for debugging
   }
-
-  // Future<void> _loadThemeMode() async {
-  //   final isDarkString = await _dbHelper.getSetting('isDarkMode');
-  //   final isDark = isDarkString == null ? true : isDarkString == 'true';
-  //   setState(() {
-  //     _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
-  //   });
-  // }
-
-  // Future<void> _saveThemeMode(bool isDark) async {
-  //   await _dbHelper.saveSetting('isDarkMode', isDark.toString());
-  // }
 
   void _toggleTheme() {
     setState(() {

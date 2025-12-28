@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart'; // Temporarily disabled
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
+import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -39,18 +41,38 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 3)); // Total duration
     if (!mounted) return;
 
-    // Force navigation to HomeScreen for debugging purposes.
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ),
-    );
+    final navigator = Navigator.of(context);
+
+    if (kDebugMode) {
+      // In debug mode, always show welcome screen
+      navigator.pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const WelcomeScreen(),
+        ),
+      );
+    } else {
+      // In production, check if first time
+      final isFirstTime = await _isFirstTime();
+      if (isFirstTime) {
+        navigator.pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const WelcomeScreen(),
+          ),
+        );
+      } else {
+        navigator.pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
+      }
+    }
   }
 
-  // Future<bool> _isFirstTime() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.getBool('first_time') ?? true;
-  // }
+  Future<bool> _isFirstTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('first_time') ?? true;
+  }
 
   @override
   void dispose() {
