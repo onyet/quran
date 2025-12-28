@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: ValueKey('home_scaffold_${_isDarkMode}'),
+      key: ValueKey('home_scaffold_$_isDarkMode'),
       backgroundColor: _getBackgroundColor(),
       body: SafeArea(
         child: Column(
