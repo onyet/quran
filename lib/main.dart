@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
-import 'database_helper.dart';
 import 'splash_screen.dart';
 
 void main() async {
@@ -35,53 +34,54 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.dark; // Default to dark
-  final DatabaseHelper _dbHelper = DatabaseHelper();
+  // final DatabaseHelper _dbHelper = DatabaseHelper(); // Temporarily disabled for debugging
 
   @override
   void initState() {
     super.initState();
-    _loadThemeMode();
+    // _loadThemeMode(); // Temporarily disabled for debugging
   }
 
-  Future<void> _loadThemeMode() async {
-    final isDarkString = await _dbHelper.getSetting('isDarkMode');
-    final isDark = isDarkString == null ? true : isDarkString == 'true';
-    setState(() {
-      _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
+  // Future<void> _loadThemeMode() async {
+  //   final isDarkString = await _dbHelper.getSetting('isDarkMode');
+  //   final isDark = isDarkString == null ? true : isDarkString == 'true';
+  //   setState(() {
+  //     _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+  //   });
+  // }
 
-  Future<void> _saveThemeMode(bool isDark) async {
-    await _dbHelper.saveSetting('isDarkMode', isDark.toString());
-  }
+  // Future<void> _saveThemeMode(bool isDark) async {
+  //   await _dbHelper.saveSetting('isDarkMode', isDark.toString());
+  // }
 
   void _toggleTheme() {
     setState(() {
       _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     });
-    _saveThemeMode(_themeMode == ThemeMode.dark);
+    // _saveThemeMode(_themeMode == ThemeMode.dark); // Temporarily disabled for debugging
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = _themeMode == ThemeMode.dark;
     return MaterialApp(
       title: 'Quran App',
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      theme: isDark ? ThemeData.dark().copyWith(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4CE619)),
+        brightness: Brightness.light,
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF4CE619),
           brightness: Brightness.dark,
         ),
         brightness: Brightness.dark,
-      ) : ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4CE619)),
-        brightness: Brightness.light,
-        useMaterial3: true,
       ),
-      home: SplashScreen(onToggleTheme: _toggleTheme, themeMode: _themeMode),
+      themeMode: _themeMode,
+      home: const SplashScreen(),
     );
   }
 }

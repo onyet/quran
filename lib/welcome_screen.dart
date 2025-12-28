@@ -89,11 +89,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       // Navigate to home screen
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            key: ValueKey('home_${widget.themeMode}'),
-            onToggleTheme: widget.onToggleTheme,
-            themeMode: widget.themeMode,
-          ),
+          builder: (context) => const HomeScreen(),
         ),
       );
     }

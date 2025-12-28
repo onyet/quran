@@ -7,10 +7,7 @@ import 'search_page.dart';
 import 'utils.dart';
 
 class HomeScreen extends StatefulWidget {
-  final VoidCallback? onToggleTheme;
-  final ThemeMode? themeMode;
-
-  const HomeScreen({super.key, this.onToggleTheme, this.themeMode});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedTab = 0; // 0: Surah, 1: Juz, 2: Bookmark
+  bool _isDarkMode = true; // Default to dark mode
 
   List<Map<String, dynamic>> surahs = [];
   List<Map<String, dynamic>> juzs = [];
@@ -110,8 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _toggleTheme() {
-    widget.onToggleTheme?.call();
-    setState(() {});
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+    });
   }
 
   void _switchLanguage() {
@@ -199,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
-                  foregroundColor: widget.themeMode == ThemeMode.dark ? const Color(0xFF152111) : Colors.white,
+                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -220,9 +219,9 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
           ),
           child: Icon(
             Icons.local_library,
@@ -286,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
-                  foregroundColor: widget.themeMode == ThemeMode.dark ? const Color(0xFF152111) : Colors.white,
+                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -307,9 +306,9 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: widget.themeMode == ThemeMode.dark ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
           ),
           child: Icon(
             Icons.menu_book,
@@ -321,18 +320,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Color _getAccentColor() => AppUtils.getAccentColor(context, widget.themeMode);
+  Color _getAccentColor() => AppUtils.getAccentColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
 
-  Color _getBackgroundColor() => AppUtils.getBackgroundColor(context, widget.themeMode);
-  Color _getSurfaceColor() => AppUtils.getSurfaceColor(context, widget.themeMode);
-  Color _getBorderColor() => AppUtils.getBorderColor(context, widget.themeMode);
-  Color _getTextColor() => AppUtils.getTextColor(context, widget.themeMode);
-  Color _getSecondaryTextColor() => AppUtils.getSecondaryTextColor(context, widget.themeMode);
+  Color _getBackgroundColor() => AppUtils.getBackgroundColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
+  Color _getSurfaceColor() => AppUtils.getSurfaceColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
+  Color _getBorderColor() => AppUtils.getBorderColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
+  Color _getTextColor() => AppUtils.getTextColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
+  Color _getSecondaryTextColor() => AppUtils.getSecondaryTextColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: ValueKey('home_scaffold_${widget.themeMode}'),
+      key: ValueKey('home_scaffold_${_isDarkMode}'),
       backgroundColor: _getBackgroundColor(),
       body: SafeArea(
         child: Column(
@@ -373,7 +372,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         onPressed: _toggleTheme,
                         icon: Icon(
-                          widget.themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode,
+                          _isDarkMode ? Icons.light_mode : Icons.dark_mode,
                           color: _getTextColor(),
                         ),
                       ),
@@ -397,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => SearchPage(themeMode: widget.themeMode),
+                      builder: (context) => SearchPage(themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light),
                     ),
                   );
                 },

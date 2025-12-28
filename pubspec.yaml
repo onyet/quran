@@ -81,12 +81,6 @@ flutter:
   assets:
     - assets/lang/
 
-  # App labels for Android and iOS
-  module:
-    androidX: true
-    androidPackage: id.onyet.app.quran
-    iosBundleIdentifier: id.onyet.app.quran
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

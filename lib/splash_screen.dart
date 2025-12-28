@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'welcome_screen.dart';
+// import 'package:shared_preferences/shared_preferences.dart'; // Temporarily disabled
 import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  final VoidCallback? onToggleTheme;
-  final ThemeMode? themeMode;
-
-  const SplashScreen({super.key, this.onToggleTheme, this.themeMode});
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -44,37 +39,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 3)); // Total duration
     if (!mounted) return;
 
-    // In debug mode, always show welcome screen
-    // In release mode, show welcome screen only on first time
-    final shouldShowWelcome = kDebugMode || (await _isFirstTime());
-
-    if (!mounted) return;
-    if (shouldShowWelcome) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => WelcomeScreen(
-            onToggleTheme: widget.onToggleTheme,
-            themeMode: widget.themeMode,
-          ),
-        ),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            key: ValueKey('home_${widget.themeMode}'),
-            onToggleTheme: widget.onToggleTheme,
-            themeMode: widget.themeMode,
-          ),
-        ),
-      );
-    }
+    // Force navigation to HomeScreen for debugging purposes.
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
   }
 
-  Future<bool> _isFirstTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('first_time') ?? true;
-  }
+  // Future<bool> _isFirstTime() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   return prefs.getBool('first_time') ?? true;
+  // }
 
   @override
   void dispose() {

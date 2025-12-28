@@ -1,4 +1,4 @@
-package com.onyet.quran
+package id.onyet.app.quran
 
 import io.flutter.embedding.android.FlutterActivity
 
