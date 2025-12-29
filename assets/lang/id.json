@@ -22,5 +22,10 @@
   "surah_matches": "Surah ({0})",
   "verse_matches": "Ayat ({0})",
   "matches": "Hasil",
-  "bookmarked": "Ditandai"
+  "bookmarked": "Ditandai",
+  "previous_surah": "Surah Sebelumnya",
+  "next_surah": "Surah Selanjutnya",
+  "verses": "Ayat",
+  "makkiyah": "Makkiyah",
+  "madaniyah": "Madaniyah"
 }

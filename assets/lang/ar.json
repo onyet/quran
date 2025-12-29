@@ -22,5 +22,10 @@
   "surah_matches": "سورة ({0})",
   "verse_matches": "آيات ({0})",
   "matches": "نتائج",
-  "bookmarked": "تم وضع إشارة مرجعية"
+  "bookmarked": "تم وضع إشارة مرجعية",
+  "previous_surah": "السورة السابقة",
+  "next_surah": "السورة التالية",
+  "verses": "آيات",
+  "makkiyah": "مكية",
+  "madaniyah": "مدنية"
 }

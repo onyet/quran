@@ -22,5 +22,10 @@
   "surah_matches": "Sourate ({0})",
   "verse_matches": "Versets ({0})",
   "matches": "Résultats",
-  "bookmarked": "Marqué"
+  "bookmarked": "Marqué",
+  "previous_surah": "Sourate précédente",
+  "next_surah": "Sourate suivante",
+  "verses": "Versets",
+  "makkiyah": "Mecquoise",
+  "madaniyah": "Médinoise"
 }

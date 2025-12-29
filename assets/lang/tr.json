@@ -22,5 +22,10 @@
   "surah_matches": "Sure ({0})",
   "verse_matches": "Ayet ({0})",
   "matches": "Sonuçlar",
-  "bookmarked": "Yer imi eklendi"
+  "bookmarked": "Yer imi eklendi",
+  "previous_surah": "Önceki Sure",
+  "next_surah": "Sonraki Sure",
+  "verses": "Ayet",
+  "makkiyah": "Mekki",
+  "madaniyah": "Medeni"
 }
