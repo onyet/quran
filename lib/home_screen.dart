@@ -4,6 +4,7 @@ import 'package:alfurqan/alfurqan.dart';
 import 'package:alfurqan/data/dart/types.dart';
 import 'database_helper.dart';
 import 'search_page.dart';
+import 'reading_screen.dart';
 import 'utils.dart';
 
 class _TabHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -221,7 +222,16 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: Navigate to reading screen
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ReadingScreen(
+                        surahNumber: lastRead!['surah_number'],
+                        surahName: lastRead!['surah_name'],
+                        initialVerse: lastRead!['verse_number'],
+                        themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                      ),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
@@ -308,7 +318,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   final verse = AlQuran.verse(1, 1);
                   await _dbHelper.saveLastRead(1, 'Al-Fatihah', 1, verse.text);
                   _loadLastRead();
-                  // TODO: Navigate to reading screen
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ReadingScreen(
+                        surahNumber: 1,
+                        surahName: 'Al-Fatihah',
+                        initialVerse: 1,
+                        themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                      ),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
