@@ -6,6 +6,28 @@ import 'database_helper.dart';
 import 'search_page.dart';
 import 'utils.dart';
 
+class _TabHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  _TabHeaderDelegate({required this.child});
+
+  @override
+  double get minExtent => 48; // Approximate height of tabs
+
+  @override
+  double get maxExtent => 48;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(_TabHeaderDelegate oldDelegate) {
+    return oldDelegate.child != child;
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -339,135 +361,170 @@ class _HomeScreenState extends State<HomeScreen> {
       key: ValueKey('home_scaffold_$_isDarkMode'),
       backgroundColor: _getBackgroundColor(),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+        child: CustomScrollView(
+          slivers: [
+            // Header Section
+            SliverList(
+              delegate: SliverChildListDelegate([
+                // Header
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: _getAccentColor().withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          Icons.menu_book,
-                          color: _getAccentColor(),
-                          size: 28,
-                        ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: _getAccentColor().withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.menu_book,
+                              color: _getAccentColor(),
+                              size: 28,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Al-Quran',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: _getTextColor(),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Al-Quran',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: _getTextColor(),
-                        ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: _toggleTheme,
+                            icon: Icon(
+                              _isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                              color: _getTextColor(),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: _switchLanguage,
+                            icon: Icon(
+                              Icons.language,
+                              color: _getTextColor(),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: _toggleTheme,
-                        icon: Icon(
-                          _isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                          color: _getTextColor(),
+                ),
+
+                // Search Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SearchPage(themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light),
                         ),
+                      );
+                    },
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: _getSurfaceColor(),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: _getBorderColor()),
                       ),
-                      IconButton(
-                        onPressed: _switchLanguage,
-                        icon: Icon(
-                          Icons.language,
-                          color: _getTextColor(),
-                        ),
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 16),
+                          Icon(
+                            Icons.search,
+                            color: _getSecondaryTextColor(),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'search_surah'.tr(),
+                              style: TextStyle(
+                                color: _getSecondaryTextColor().withValues(alpha: 0.6),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+
+                // Last Read Card
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: _getSurfaceColor(),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: _getBorderColor()),
+                    ),
+                    child: lastRead != null ? _buildLastReadCard() : _buildStartReadingCard(),
+                  ),
+                ),
+              ]),
             ),
 
-            // Search Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SearchPage(themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light),
-                    ),
-                  );
-                },
+            // Sticky Tabs
+            SliverPersistentHeader(
+              pinned: true,
+              floating: true,
+              delegate: _TabHeaderDelegate(
                 child: Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: _getSurfaceColor(),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: _getBorderColor()),
-                  ),
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                  color: _getBackgroundColor(),
                   child: Row(
                     children: [
-                      const SizedBox(width: 16),
-                      Icon(
-                        Icons.search,
-                        color: _getSecondaryTextColor(),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'search_surah'.tr(),
-                          style: TextStyle(
-                            color: _getSecondaryTextColor().withValues(alpha: 0.6),
-                          ),
-                        ),
-                      ),
+                      _buildTab(0, 'surah'.tr()),
+                      _buildTab(1, 'juz'.tr()),
+                      _buildTab(2, 'bookmark'.tr()),
                     ],
                   ),
                 ),
-              ),
-            ),
-
-            // Last Read Card
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: _getSurfaceColor(),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: _getBorderColor()),
-                ),
-                child: lastRead != null ? _buildLastReadCard() : _buildStartReadingCard(),
-              ),
-            ),
-
-            // Tabs
-            Container(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-              child: Row(
-                children: [
-                  _buildTab(0, 'surah'.tr()),
-                  _buildTab(1, 'juz'.tr()),
-                  _buildTab(2, 'bookmark'.tr()),
-                ],
               ),
             ),
 
             // Content
-            Expanded(
-              child: _selectedTab == 0
-                  ? _buildSurahList()
-                  : _selectedTab == 1
-                      ? _buildJuzList()
-                      : _buildBookmarkList(),
-            ),
+            if (_selectedTab == 0)
+              SliverPadding(
+                padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => _buildSurahItem(index),
+                    childCount: surahs.length,
+                  ),
+                ),
+              )
+            else if (_selectedTab == 1)
+              SliverPadding(
+                padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => _buildJuzItem(index),
+                    childCount: juzs.length,
+                  ),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => _buildBookmarkItem(index),
+                    childCount: bookmarks.isEmpty ? 1 : bookmarks.length,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -480,8 +537,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: GestureDetector(
         onTap: () => setState(() => _selectedTab = index),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
+            color: isSelected ? _getAccentColor().withValues(alpha: 0.1) : Colors.transparent,
             border: Border(
               bottom: BorderSide(
                 color: isSelected ? _getAccentColor() : Colors.transparent,
@@ -489,13 +546,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: isSelected ? _getAccentColor() : _getSecondaryTextColor(),
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+          child: Center(
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isSelected ? _getAccentColor() : _getTextColor(),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -503,220 +562,208 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSurahList() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      itemCount: surahs.length,
-      itemBuilder: (context, index) {
-        final surah = surahs[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: _getSurfaceColor(),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _getBorderColor()),
-          ),
-          child: Row(
-            children: [
-              // Number Badge
-              Transform.rotate(
-                angle: 45 * 3.14159 / 180, // 45 degrees in radians
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Transform.rotate(
-                      angle: -45 * 3.14159 / 180, // Rotate text back to readable position
-                      child: Text(
-                        _formatNumber(surah['number']),
-                        style: TextStyle(
-                          color: _getTextColor(),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+  Widget _buildSurahItem(int index) {
+    final surah = surahs[index];
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: _getSurfaceColor(),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _getBorderColor()),
+      ),
+      child: Row(
+        children: [
+          // Number Badge
+          Transform.rotate(
+            angle: 45 * 3.14159 / 180, // 45 degrees in radians
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
+                borderRadius: BorderRadius.circular(8),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      surah['name'],
-                      style: TextStyle(
-                        color: _getTextColor(),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Row(
-                      children: _getCurrentLanguageKey() == 'ar'
-                          ? [
-                              Text(
-                                '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
-                                style: TextStyle(
-                                  color: _getSecondaryTextColor(),
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ]
-                          : [
-                              Text(
-                                surah['translation'],
-                                style: TextStyle(
-                                  color: _getSecondaryTextColor(),
-                                  fontSize: 12,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
-                                width: 4,
-                                height: 4,
-                                decoration: BoxDecoration(
-                                  color: _getSecondaryTextColor().withValues(alpha: 0.6),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              Text(
-                                '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
-                                style: TextStyle(
-                                  color: _getSecondaryTextColor(),
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    surah['arabic'],
+              child: Center(
+                child: Transform.rotate(
+                  angle: -45 * 3.14159 / 180, // Rotate text back to readable position
+                  child: Text(
+                    _formatNumber(surah['number']),
                     style: TextStyle(
-                      color: _getAccentColor(),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Icon(
-                    surah['type'] == 'Makkiyah' ? Icons.mosque : Icons.location_city,
-                    color: _getSecondaryTextColor(),
-                    size: 16,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildJuzList() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      itemCount: juzs.length,
-      itemBuilder: (context, index) {
-        final juz = juzs[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: _getSurfaceColor(),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _getBorderColor()),
-          ),
-          child: Row(
-            children: [
-              // Number Badge
-              Transform.rotate(
-                angle: 45 * 3.14159 / 180, // 45 degrees in radians
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Transform.rotate(
-                      angle: -45 * 3.14159 / 180, // Rotate text back to readable position
-                      child: Text(
-                        _formatNumber(juz['number']),
-                        style: TextStyle(
-                          color: _getTextColor(),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      color: _getTextColor(),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      juz['name'],
-                      style: TextStyle(
-                        color: _getTextColor(),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '${_formatNumber(juz['chapters'])} ${'chapters'.tr()}',
-                          style: TextStyle(
-                            color: _getSecondaryTextColor(),
-                            fontSize: 12,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  surah['name'],
+                  style: TextStyle(
+                    color: _getTextColor(),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Row(
+                  children: _getCurrentLanguageKey() == 'ar'
+                      ? [
+                          Text(
+                            '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
+                            style: TextStyle(
+                              color: _getSecondaryTextColor(),
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          width: 4,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: _getSecondaryTextColor().withValues(alpha: 0.6),
-                            shape: BoxShape.circle,
+                        ]
+                      : [
+                          Text(
+                            surah['translation'],
+                            style: TextStyle(
+                              color: _getSecondaryTextColor(),
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${_formatNumber(juz['verses'])} ${'verses'.tr()}',
-                          style: TextStyle(
-                            color: _getSecondaryTextColor(),
-                            fontSize: 12,
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: _getSecondaryTextColor().withValues(alpha: 0.6),
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          Text(
+                            '${_formatNumber(surah['verses'])} ${'verses'.tr()}',
+                            style: TextStyle(
+                              color: _getSecondaryTextColor(),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                surah['arabic'],
+                style: TextStyle(
+                  color: _getAccentColor(),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               Icon(
-                Icons.book,
-                color: _getAccentColor(),
-                size: 24,
+                surah['type'] == 'Makkiyah' ? Icons.mosque : Icons.location_city,
+                color: _getSecondaryTextColor(),
+                size: 16,
               ),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  Widget _buildBookmarkList() {
+  Widget _buildJuzItem(int index) {
+    final juz = juzs[index];
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: _getSurfaceColor(),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _getBorderColor()),
+      ),
+      child: Row(
+        children: [
+          // Number Badge
+          Transform.rotate(
+            angle: 45 * 3.14159 / 180, // 45 degrees in radians
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Transform.rotate(
+                  angle: -45 * 3.14159 / 180, // Rotate text back to readable position
+                  child: Text(
+                    _formatNumber(juz['number']),
+                    style: TextStyle(
+                      color: _getTextColor(),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  juz['name'],
+                  style: TextStyle(
+                    color: _getTextColor(),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${_formatNumber(juz['chapters'])} ${'chapters'.tr()}',
+                      style: TextStyle(
+                        color: _getSecondaryTextColor(),
+                        fontSize: 12,
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: _getSecondaryTextColor().withValues(alpha: 0.6),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Text(
+                      '${_formatNumber(juz['verses'])} ${'verses'.tr()}',
+                      style: TextStyle(
+                        color: _getSecondaryTextColor(),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.book,
+            color: _getAccentColor(),
+            size: 24,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookmarkItem(int index) {
     if (bookmarks.isEmpty) {
       return Center(
         child: Column(
@@ -740,74 +787,68 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      itemCount: bookmarks.length,
-      itemBuilder: (context, index) {
-        final bookmark = bookmarks[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: _getSurfaceColor(),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _getBorderColor()),
+    final bookmark = bookmarks[index];
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: _getSurfaceColor(),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _getBorderColor()),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: _getAccentColor().withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.bookmark,
+              color: _getAccentColor(),
+              size: 20,
+            ),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: _getAccentColor().withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${bookmark['surah_name']} - ${'verse'.tr(namedArgs: {'number': _formatNumber(bookmark['verse_number'])})}',
+                  style: TextStyle(
+                    color: _getTextColor(),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                child: Icon(
-                  Icons.bookmark,
-                  color: _getAccentColor(),
-                  size: 20,
+                const SizedBox(height: 4),
+                Text(
+                  bookmark['verse_text'],
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: _getSecondaryTextColor(),
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${bookmark['surah_name']} - ${'verse'.tr(namedArgs: {'number': _formatNumber(bookmark['verse_number'])})}',
-                      style: TextStyle(
-                        color: _getTextColor(),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      bookmark['verse_text'],
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: _getSecondaryTextColor(),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                onPressed: () async {
-                  await _dbHelper.removeBookmark(bookmark['id']);
-                  _loadBookmarks();
-                },
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+          IconButton(
+            onPressed: () async {
+              await _dbHelper.removeBookmark(bookmark['id']);
+              _loadBookmarks();
+            },
+            icon: Icon(
+              Icons.delete,
+              color: Colors.red.withValues(alpha: 0.7),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
