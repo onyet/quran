@@ -15,6 +15,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _glowAnimation;
 
   @override
   void initState() {
@@ -28,8 +29,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.2, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+    );
+
+    _glowAnimation = Tween<double>(begin: 0.0, end: 20.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
     _controller.forward();
@@ -96,7 +101,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 opacity: _fadeAnimation,
                 child: ScaleTransition(
                   scale: _scaleAnimation,
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
                     width: 128,
                     height: 128,
                     decoration: BoxDecoration(
@@ -105,8 +111,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       border: Border.all(color: const Color(0xFF42533C)), // border-dark
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF4CE619).withValues(alpha: 0.1),
-                          blurRadius: 10,
+                          color: const Color(0xFF4CE619).withValues(alpha: 0.3),
+                          blurRadius: _glowAnimation.value,
+                          spreadRadius: _glowAnimation.value * 0.5,
                         ),
                       ],
                     ),
