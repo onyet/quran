@@ -130,151 +130,156 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               ),
             ),
             // Main Content
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Top Section
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Logo
-                        Container(
-                          width: 128,
-                          height: 128,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1E261C), // surface-dark
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xFF42533C)), // border-dark
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF4CE619).withValues(alpha: 0.1),
-                                blurRadius: 10,
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.menu_book,
-                            size: 64,
-                            color: Color(0xFF4CE619), // primary
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        // Text
-                        Text(
-                          'welcome_title',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ).tr(),
-                        const SizedBox(height: 16),
-                        Text(
-                          'welcome_description',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.7),
-                          ),
-                        ).tr(),
-                      ],
-                    ),
-                  ),
-                  // Bottom Section
-                  Column(
+            Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Language Selector
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'select_language',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ).tr(),
-                          const SizedBox(height: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1E261C), // surface-dark
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFF42533C)), // border-dark
-                            ),
-                            child: DropdownButton<String>(
-                              value: selectedLanguage,
-                              isExpanded: true,
-                              underline: const SizedBox(),
-                              dropdownColor: const Color(0xFF1E261C), // surface-dark
-                              style: const TextStyle(
-                                color: Colors.white, // text color for selected item
-                                fontSize: 16,
-                              ),
-                              items: languages.map((lang) {
-                                return DropdownMenuItem(
-                                  value: lang['code'],
-                                  child: Text(
-                                    lang['name']!,
-                                    style: const TextStyle(color: Colors.white), // text color for items
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedLanguage = value!;
-                                });
-                                context.setLocale(Locale(value!));
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      // Action Button
-                      ElevatedButton(
-                        onPressed: _startApp,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4CE619), // primary
-                          foregroundColor: const Color(0xFF152111), // background-dark
-                          minimumSize: const Size(double.infinity, 56),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          shadowColor: const Color(0xFF4CE619).withValues(alpha: 0.3),
-                          elevation: 10,
-                        ),
-                        child: Row(
+                      // Top Section
+                      Expanded(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            // Logo
+                            Container(
+                              width: 128,
+                              height: 128,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1E261C), // surface-dark
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: const Color(0xFF42533C)), // border-dark
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF4CE619).withValues(alpha: 0.1),
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.menu_book,
+                                size: 64,
+                                color: Color(0xFF4CE619), // primary
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                            // Text
                             Text(
-                              'start_now',
+                              'welcome_title',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ).tr(),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.arrow_forward),
+                            const SizedBox(height: 16),
+                            Text(
+                              'welcome_description',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white.withValues(alpha: 0.7),
+                              ),
+                            ).tr(),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'version',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white.withValues(alpha: 0.5),
-                        ),
-                      ).tr(),
+                      // Bottom Section
+                      Column(
+                        children: [
+                          // Language Selector
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'select_language',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ).tr(),
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF1E261C), // surface-dark
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: const Color(0xFF42533C)), // border-dark
+                                ),
+                                child: DropdownButton<String>(
+                                  value: selectedLanguage,
+                                  isExpanded: true,
+                                  underline: const SizedBox(),
+                                  dropdownColor: const Color(0xFF1E261C), // surface-dark
+                                  style: const TextStyle(
+                                    color: Colors.white, // text color for selected item
+                                    fontSize: 16,
+                                  ),
+                                  items: languages.map((lang) {
+                                    return DropdownMenuItem(
+                                      value: lang['code'],
+                                      child: Text(
+                                        lang['name']!,
+                                        style: const TextStyle(color: Colors.white), // text color for items
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedLanguage = value!;
+                                    });
+                                    context.setLocale(Locale(value!));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          // Action Button
+                          ElevatedButton(
+                            onPressed: _startApp,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF4CE619), // primary
+                              foregroundColor: const Color(0xFF152111), // background-dark
+                              minimumSize: const Size(double.infinity, 56),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              shadowColor: const Color(0xFF4CE619).withValues(alpha: 0.3),
+                              elevation: 10,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'start_now',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ).tr(),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_forward),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'version',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white.withValues(alpha: 0.5),
+                            ),
+                          ).tr(),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
