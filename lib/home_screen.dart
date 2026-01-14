@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:alfurqan/alfurqan.dart';
@@ -19,7 +21,11 @@ class _TabHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 48;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return child;
   }
 
@@ -77,10 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
       loadedSurahs.add({
         'number': chapter.id,
         'name': _decodeHtmlEntities(chapter.nameSimple),
-        'translation': _decodeHtmlEntities(chapter.translatedName[currentLang] ?? chapter.nameSimple),
+        'translation': _decodeHtmlEntities(
+          chapter.translatedName[currentLang] ?? chapter.nameSimple,
+        ),
         'arabic': chapter.nameArabic,
         'verses': chapter.versesCount,
-        'type': chapter.revelationPlace == ChapterRevelationPlace.makkah ? 'Makkiyah' : 'Madaniyah',
+        'type': chapter.revelationPlace == ChapterRevelationPlace.makkah
+            ? 'Makkiyah'
+            : 'Madaniyah',
       });
     }
 
@@ -187,11 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.bookmark,
-                    color: _getAccentColor(),
-                    size: 16,
-                  ),
+                  Icon(Icons.bookmark, color: _getAccentColor(), size: 16),
                   const SizedBox(width: 8),
                   Text(
                     'last_read'.tr(),
@@ -213,11 +219,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                'verse'.tr(namedArgs: {'number': _formatNumber(lastRead!['verse_number'])}),
-                style: TextStyle(
-                  color: _getSecondaryTextColor(),
-                  fontSize: 14,
+                'verse'.tr(
+                  namedArgs: {
+                    'number': _formatNumber(lastRead!['verse_number']),
+                  },
                 ),
+                style: TextStyle(color: _getSecondaryTextColor(), fontSize: 14),
               ),
               const SizedBox(height: 12),
               ElevatedButton(
@@ -228,14 +235,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         surahNumber: lastRead!['surah_number'],
                         surahName: lastRead!['surah_name'],
                         initialVerse: lastRead!['verse_number'],
-                        themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                        themeMode: _isDarkMode
+                            ? ThemeMode.dark
+                            : ThemeMode.light,
                       ),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
-                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                  foregroundColor: _isDarkMode
+                      ? const Color(0xFF152111)
+                      : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -256,9 +267,15 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            color: _isDarkMode
+                ? Colors.white.withValues(alpha: 0.1)
+                : Colors.black.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+            border: Border.all(
+              color: _isDarkMode
+                  ? Colors.white.withValues(alpha: 0.2)
+                  : Colors.black.withValues(alpha: 0.1),
+            ),
           ),
           child: Icon(
             Icons.local_library,
@@ -279,11 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.play_circle,
-                    color: _getAccentColor(),
-                    size: 16,
-                  ),
+                  Icon(Icons.play_circle, color: _getAccentColor(), size: 16),
                   const SizedBox(width: 8),
                   Text(
                     'start_reading'.tr(),
@@ -306,10 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Text(
                 'verse'.tr(namedArgs: {'number': _formatNumber(1)}),
-                style: TextStyle(
-                  color: _getSecondaryTextColor(),
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: _getSecondaryTextColor(), fontSize: 14),
               ),
               const SizedBox(height: 12),
               ElevatedButton(
@@ -324,14 +334,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         surahNumber: 1,
                         surahName: 'Al-Fatihah',
                         initialVerse: 1,
-                        themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                        themeMode: _isDarkMode
+                            ? ThemeMode.dark
+                            : ThemeMode.light,
                       ),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
-                  foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                  foregroundColor: _isDarkMode
+                      ? const Color(0xFF152111)
+                      : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -352,9 +366,15 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: _isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+            color: _isDarkMode
+                ? Colors.white.withValues(alpha: 0.1)
+                : Colors.black.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _isDarkMode ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1)),
+            border: Border.all(
+              color: _isDarkMode
+                  ? Colors.white.withValues(alpha: 0.2)
+                  : Colors.black.withValues(alpha: 0.1),
+            ),
           ),
           child: Icon(
             Icons.menu_book,
@@ -366,13 +386,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Color _getAccentColor() => AppUtils.getAccentColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
+  Color _getAccentColor() => AppUtils.getAccentColor(
+    context,
+    _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+  );
 
-  Color _getBackgroundColor() => AppUtils.getBackgroundColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
-  Color _getSurfaceColor() => AppUtils.getSurfaceColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
-  Color _getBorderColor() => AppUtils.getBorderColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
-  Color _getTextColor() => AppUtils.getTextColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
-  Color _getSecondaryTextColor() => AppUtils.getSecondaryTextColor(context, _isDarkMode ? ThemeMode.dark : ThemeMode.light);
+  Color _getBackgroundColor() => AppUtils.getBackgroundColor(
+    context,
+    _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+  );
+  Color _getSurfaceColor() => AppUtils.getSurfaceColor(
+    context,
+    _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+  );
+  Color _getBorderColor() => AppUtils.getBorderColor(
+    context,
+    _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+  );
+  Color _getTextColor() => AppUtils.getTextColor(
+    context,
+    _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+  );
+  Color _getSecondaryTextColor() => AppUtils.getSecondaryTextColor(
+    context,
+    _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -387,7 +425,10 @@ class _HomeScreenState extends State<HomeScreen> {
               delegate: SliverChildListDelegate([
                 // Header
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -427,10 +468,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           IconButton(
                             onPressed: _switchLanguage,
-                            icon: Icon(
-                              Icons.language,
-                              color: _getTextColor(),
-                            ),
+                            icon: Icon(Icons.language, color: _getTextColor()),
                           ),
                         ],
                       ),
@@ -440,12 +478,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // Search Bar
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => SearchPage(themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light),
+                          builder: (context) => SearchPage(
+                            themeMode: _isDarkMode
+                                ? ThemeMode.dark
+                                : ThemeMode.light,
+                          ),
                         ),
                       );
                     },
@@ -459,16 +504,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           const SizedBox(width: 16),
-                          Icon(
-                            Icons.search,
-                            color: _getSecondaryTextColor(),
-                          ),
+                          Icon(Icons.search, color: _getSecondaryTextColor()),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               'search_surah'.tr(),
                               style: TextStyle(
-                                color: _getSecondaryTextColor().withValues(alpha: 0.6),
+                                color: _getSecondaryTextColor().withValues(
+                                  alpha: 0.6,
+                                ),
                               ),
                             ),
                           ),
@@ -480,7 +524,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // Last Read Card
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -488,7 +535,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: _getBorderColor()),
                     ),
-                    child: lastRead != null ? _buildLastReadCard() : _buildStartReadingCard(),
+                    child: lastRead != null
+                        ? _buildLastReadCard()
+                        : _buildStartReadingCard(),
                   ),
                 ),
               ]),
@@ -557,7 +606,9 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () => setState(() => _selectedTab = index),
         child: Container(
           decoration: BoxDecoration(
-            color: isSelected ? _getAccentColor().withValues(alpha: 0.1) : Colors.transparent,
+            color: isSelected
+                ? _getAccentColor().withValues(alpha: 0.1)
+                : Colors.transparent,
             border: Border(
               bottom: BorderSide(
                 color: isSelected ? _getAccentColor() : Colors.transparent,
@@ -600,12 +651,17 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: _getAccentColor().withValues(alpha: 0.3),
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Transform.rotate(
-                  angle: -45 * 3.14159 / 180, // Rotate text back to readable position
+                  angle:
+                      -45 *
+                      3.14159 /
+                      180, // Rotate text back to readable position
                   child: Text(
                     _formatNumber(surah['number']),
                     style: TextStyle(
@@ -654,7 +710,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 4,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: _getSecondaryTextColor().withValues(alpha: 0.6),
+                              color: _getSecondaryTextColor().withValues(
+                                alpha: 0.6,
+                              ),
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -682,7 +740,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Icon(
-                surah['type'] == 'Makkiyah' ? Icons.mosque : Icons.location_city,
+                surah['type'] == 'Makkiyah'
+                    ? Icons.mosque
+                    : Icons.location_city,
                 color: _getSecondaryTextColor(),
                 size: 16,
               ),
@@ -712,12 +772,17 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: _getAccentColor().withValues(alpha: 0.3),
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Transform.rotate(
-                  angle: -45 * 3.14159 / 180, // Rotate text back to readable position
+                  angle:
+                      -45 *
+                      3.14159 /
+                      180, // Rotate text back to readable position
                   child: Text(
                     _formatNumber(juz['number']),
                     style: TextStyle(
@@ -772,11 +837,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Icon(
-            Icons.book,
-            color: _getAccentColor(),
-            size: 24,
-          ),
+          Icon(Icons.book, color: _getAccentColor(), size: 24),
         ],
       ),
     );
@@ -796,10 +857,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             Text(
               'no_bookmarks'.tr(),
-              style: TextStyle(
-                color: _getSecondaryTextColor(),
-                fontSize: 16,
-              ),
+              style: TextStyle(color: _getSecondaryTextColor(), fontSize: 16),
             ),
           ],
         ),
@@ -824,11 +882,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: _getAccentColor().withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              Icons.bookmark,
-              color: _getAccentColor(),
-              size: 20,
-            ),
+            child: Icon(Icons.bookmark, color: _getAccentColor(), size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -861,15 +915,10 @@ class _HomeScreenState extends State<HomeScreen> {
               await _dbHelper.removeBookmark(bookmark['id']);
               _loadBookmarks();
             },
-            icon: Icon(
-              Icons.delete,
-              color: Colors.red.withValues(alpha: 0.7),
-            ),
+            icon: Icon(Icons.delete, color: Colors.red.withValues(alpha: 0.7)),
           ),
         ],
       ),
     );
   }
-
-
 }

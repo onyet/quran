@@ -31,7 +31,8 @@ class PatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(PatternPainter oldDelegate) => oldDelegate.animationValue != animationValue;
+  bool shouldRepaint(PatternPainter oldDelegate) =>
+      oldDelegate.animationValue != animationValue;
 }
 
 class WelcomeScreen extends StatefulWidget {
@@ -44,7 +45,8 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
   String selectedLanguage = 'en'; // Default to English
 
   late AnimationController _animationController;
@@ -66,7 +68,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       vsync: this,
     )..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_animationController);
   }
 
   @override
@@ -88,9 +93,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     if (mounted) {
       // Navigate to home screen
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     }
   }
@@ -109,9 +112,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               animation: _animation,
               builder: (context, child) {
                 return Positioned.fill(
-                  child: CustomPaint(
-                    painter: PatternPainter(_animation.value),
-                  ),
+                  child: CustomPaint(painter: PatternPainter(_animation.value)),
                 );
               },
             ),
@@ -134,7 +135,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 600),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 48.0,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -150,10 +154,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                               decoration: BoxDecoration(
                                 color: const Color(0xFF1E261C), // surface-dark
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: const Color(0xFF42533C)), // border-dark
+                                border: Border.all(
+                                  color: const Color(0xFF42533C),
+                                ), // border-dark
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF4CE619).withValues(alpha: 0.1),
+                                    color: const Color(
+                                      0xFF4CE619,
+                                    ).withValues(alpha: 0.1),
                                     blurRadius: 10,
                                   ),
                                 ],
@@ -204,19 +212,29 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                               ).tr(),
                               const SizedBox(height: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF1E261C), // surface-dark
+                                  color: const Color(
+                                    0xFF1E261C,
+                                  ), // surface-dark
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: const Color(0xFF42533C)), // border-dark
+                                  border: Border.all(
+                                    color: const Color(0xFF42533C),
+                                  ), // border-dark
                                 ),
                                 child: DropdownButton<String>(
                                   value: selectedLanguage,
                                   isExpanded: true,
                                   underline: const SizedBox(),
-                                  dropdownColor: const Color(0xFF1E261C), // surface-dark
+                                  dropdownColor: const Color(
+                                    0xFF1E261C,
+                                  ), // surface-dark
                                   style: const TextStyle(
-                                    color: Colors.white, // text color for selected item
+                                    color: Colors
+                                        .white, // text color for selected item
                                     fontSize: 16,
                                   ),
                                   items: languages.map((lang) {
@@ -224,7 +242,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                                       value: lang['code'],
                                       child: Text(
                                         lang['name']!,
-                                        style: const TextStyle(color: Colors.white), // text color for items
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ), // text color for items
                                       ),
                                     );
                                   }).toList(),
@@ -243,13 +263,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                           ElevatedButton(
                             onPressed: _startApp,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF4CE619), // primary
-                              foregroundColor: const Color(0xFF152111), // background-dark
+                              backgroundColor: const Color(
+                                0xFF4CE619,
+                              ), // primary
+                              foregroundColor: const Color(
+                                0xFF152111,
+                              ), // background-dark
                               minimumSize: const Size(double.infinity, 56),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              shadowColor: const Color(0xFF4CE619).withValues(alpha: 0.3),
+                              shadowColor: const Color(
+                                0xFF4CE619,
+                              ).withValues(alpha: 0.3),
                               elevation: 10,
                             ),
                             child: Row(

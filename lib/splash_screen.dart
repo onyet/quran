@@ -11,7 +11,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -25,17 +26,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    _scaleAnimation = Tween<double>(begin: 0.2, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.2,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
-    _glowAnimation = Tween<double>(begin: 0.0, end: 20.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _glowAnimation = Tween<double>(
+      begin: 0.0,
+      end: 20.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.forward();
 
@@ -51,24 +55,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (kDebugMode) {
       // In debug mode, always show welcome screen
       navigator.pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
       );
     } else {
       // In production, check if first time
       final isFirstTime = await _isFirstTime();
       if (isFirstTime) {
         navigator.pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const WelcomeScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
         );
       } else {
         navigator.pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       }
     }
@@ -90,9 +88,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return Scaffold(
       backgroundColor: const Color(0xFF152111), // background-dark
       body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF152111),
-        ),
+        decoration: const BoxDecoration(color: Color(0xFF152111)),
         child: Center(
           child: AnimatedBuilder(
             animation: _controller,
@@ -108,7 +104,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     decoration: BoxDecoration(
                       color: const Color(0xFF1E261C), // surface-dark
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFF42533C)), // border-dark
+                      border: Border.all(
+                        color: const Color(0xFF42533C),
+                      ), // border-dark
                       boxShadow: [
                         BoxShadow(
                           color: const Color(0xFF4CE619).withValues(alpha: 0.3),

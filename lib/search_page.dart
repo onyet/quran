@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:alfurqan/alfurqan.dart';
@@ -62,16 +64,24 @@ class _SearchPageState extends State<SearchPage> {
     for (int i = 1; i <= AlQuran.totalChapter; i++) {
       final chapter = AlQuran.chapter(i);
       final name = _decodeHtmlEntities(chapter.nameSimple).toLowerCase();
-      final translation = _decodeHtmlEntities(chapter.translatedName[_getTranslationType().languageCode] ?? chapter.nameSimple).toLowerCase();
+      final translation = _decodeHtmlEntities(
+        chapter.translatedName[_getTranslationType().languageCode] ??
+            chapter.nameSimple,
+      ).toLowerCase();
 
       if (name.contains(queryLower) || translation.contains(queryLower)) {
         surahResults.add({
           'number': chapter.id,
           'name': _decodeHtmlEntities(chapter.nameSimple),
-          'translation': _decodeHtmlEntities(chapter.translatedName[_getTranslationType().languageCode] ?? chapter.nameSimple),
+          'translation': _decodeHtmlEntities(
+            chapter.translatedName[_getTranslationType().languageCode] ??
+                chapter.nameSimple,
+          ),
           'arabic': chapter.nameArabic,
           'verses': chapter.versesCount,
-          'type': chapter.revelationPlace == ChapterRevelationPlace.makkah ? 'Makkiyah' : 'Madaniyah',
+          'type': chapter.revelationPlace == ChapterRevelationPlace.makkah
+              ? 'Makkiyah'
+              : 'Madaniyah',
         });
       }
     }
@@ -80,21 +90,36 @@ class _SearchPageState extends State<SearchPage> {
     final verseResults = <Map<String, dynamic>>[];
     if (_filter != 'Surah') {
       final translationType = _getTranslationType();
-      for (int surahIndex = 1; surahIndex <= AlQuran.totalChapter; surahIndex++) {
+      for (
+        int surahIndex = 1;
+        surahIndex <= AlQuran.totalChapter;
+        surahIndex++
+      ) {
         final chapter = AlQuran.chapter(surahIndex);
-        for (int verseIndex = 1; verseIndex <= chapter.versesCount; verseIndex++) {
+        for (
+          int verseIndex = 1;
+          verseIndex <= chapter.versesCount;
+          verseIndex++
+        ) {
           final verse = AlQuran.verse(surahIndex, verseIndex);
           final arabicText = verse.text.toLowerCase();
-          final translation = AlQuran.translation(translationType, verse.verseKey).text.toLowerCase();
+          final translation = AlQuran.translation(
+            translationType,
+            verse.verseKey,
+          ).text.toLowerCase();
 
-          if (arabicText.contains(queryLower) || translation.contains(queryLower)) {
+          if (arabicText.contains(queryLower) ||
+              translation.contains(queryLower)) {
             verseResults.add({
               'surahNumber': surahIndex,
               'surahName': _decodeHtmlEntities(chapter.nameSimple),
               'surahArabic': chapter.nameArabic,
               'verseNumber': verseIndex,
               'arabicText': verse.text,
-              'translation': AlQuran.translation(translationType, verse.verseKey).text,
+              'translation': AlQuran.translation(
+                translationType,
+                verse.verseKey,
+              ).text,
             });
           }
         }
@@ -125,10 +150,7 @@ class _SearchPageState extends State<SearchPage> {
     if (query.isEmpty) {
       return TextSpan(
         text: text,
-        style: TextStyle(
-          color: _getSecondaryTextColor(),
-          fontSize: 14,
-        ),
+        style: TextStyle(color: _getSecondaryTextColor(), fontSize: 14),
       );
     }
 
@@ -139,10 +161,7 @@ class _SearchPageState extends State<SearchPage> {
     if (matches.isEmpty) {
       return TextSpan(
         text: text,
-        style: TextStyle(
-          color: _getSecondaryTextColor(),
-          fontSize: 14,
-        ),
+        style: TextStyle(color: _getSecondaryTextColor(), fontSize: 14),
       );
     }
 
@@ -151,34 +170,34 @@ class _SearchPageState extends State<SearchPage> {
 
     for (final match in matches) {
       if (match.start > lastIndex) {
-        spans.add(TextSpan(
-          text: text.substring(lastIndex, match.start),
+        spans.add(
+          TextSpan(
+            text: text.substring(lastIndex, match.start),
+            style: TextStyle(color: _getSecondaryTextColor(), fontSize: 14),
+          ),
+        );
+      }
+      spans.add(
+        TextSpan(
+          text: text.substring(match.start, match.end),
           style: TextStyle(
-            color: _getSecondaryTextColor(),
+            color: _getAccentColor(),
+            fontWeight: FontWeight.bold,
+            backgroundColor: _getAccentColor().withValues(alpha: 0.1),
             fontSize: 14,
           ),
-        ));
-      }
-      spans.add(TextSpan(
-        text: text.substring(match.start, match.end),
-        style: TextStyle(
-          color: _getAccentColor(),
-          fontWeight: FontWeight.bold,
-          backgroundColor: _getAccentColor().withValues(alpha: 0.1),
-          fontSize: 14,
         ),
-      ));
+      );
       lastIndex = match.end;
     }
 
     if (lastIndex < text.length) {
-      spans.add(TextSpan(
-        text: text.substring(lastIndex),
-        style: TextStyle(
-          color: _getSecondaryTextColor(),
-          fontSize: 14,
+      spans.add(
+        TextSpan(
+          text: text.substring(lastIndex),
+          style: TextStyle(color: _getSecondaryTextColor(), fontSize: 14),
         ),
-      ));
+      );
     }
 
     return TextSpan(children: spans);
@@ -186,11 +205,14 @@ class _SearchPageState extends State<SearchPage> {
 
   Color _getAccentColor() => AppUtils.getAccentColor(context, widget.themeMode);
 
-  Color _getBackgroundColor() => AppUtils.getBackgroundColor(context, widget.themeMode);
-  Color _getSurfaceColor() => AppUtils.getSurfaceColor(context, widget.themeMode);
+  Color _getBackgroundColor() =>
+      AppUtils.getBackgroundColor(context, widget.themeMode);
+  Color _getSurfaceColor() =>
+      AppUtils.getSurfaceColor(context, widget.themeMode);
   Color _getBorderColor() => AppUtils.getBorderColor(context, widget.themeMode);
   Color _getTextColor() => AppUtils.getTextColor(context, widget.themeMode);
-  Color _getSecondaryTextColor() => AppUtils.getSecondaryTextColor(context, widget.themeMode);
+  Color _getSecondaryTextColor() =>
+      AppUtils.getSecondaryTextColor(context, widget.themeMode);
 
   @override
   Widget build(BuildContext context) {
@@ -206,10 +228,7 @@ class _SearchPageState extends State<SearchPage> {
                 children: [
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: _getTextColor(),
-                    ),
+                    icon: Icon(Icons.arrow_back, color: _getTextColor()),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -223,10 +242,7 @@ class _SearchPageState extends State<SearchPage> {
                       child: Row(
                         children: [
                           const SizedBox(width: 16),
-                          Icon(
-                            Icons.search,
-                            color: _getSecondaryTextColor(),
-                          ),
+                          Icon(Icons.search, color: _getSecondaryTextColor()),
                           const SizedBox(width: 12),
                           Expanded(
                             child: TextField(
@@ -235,7 +251,9 @@ class _SearchPageState extends State<SearchPage> {
                               decoration: InputDecoration(
                                 hintText: 'search_surah'.tr(),
                                 hintStyle: TextStyle(
-                                  color: _getSecondaryTextColor().withValues(alpha: 0.6),
+                                  color: _getSecondaryTextColor().withValues(
+                                    alpha: 0.6,
+                                  ),
                                 ),
                                 border: InputBorder.none,
                               ),
@@ -293,20 +311,26 @@ class _SearchPageState extends State<SearchPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (_surahResults.isNotEmpty && (_filter == 'Semua' || _filter == 'Surah')) ...[
+                          if (_surahResults.isNotEmpty &&
+                              (_filter == 'Semua' || _filter == 'Surah')) ...[
                             _buildSurahSection(),
                           ],
-                          if (_verseResults.isNotEmpty && (_filter == 'Semua' || _filter == 'Ayat')) ...[
+                          if (_verseResults.isNotEmpty &&
+                              (_filter == 'Semua' || _filter == 'Ayat')) ...[
                             _buildVerseSection(),
                           ],
-                          if (_surahResults.isEmpty && _verseResults.isEmpty && !_isLoading) ...[
+                          if (_surahResults.isEmpty &&
+                              _verseResults.isEmpty &&
+                              !_isLoading) ...[
                             Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
                                     Icons.search_off,
-                                    color: _getSecondaryTextColor().withValues(alpha: 0.3),
+                                    color: _getSecondaryTextColor().withValues(
+                                      alpha: 0.3,
+                                    ),
                                     size: 64,
                                   ),
                                   const SizedBox(height: 16),
@@ -345,7 +369,9 @@ class _SearchPageState extends State<SearchPage> {
           padding: const EdgeInsets.symmetric(vertical: 12),
           margin: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
-            color: isSelected ? _getAccentColor().withValues(alpha: 0.1) : _getSurfaceColor(),
+            color: isSelected
+                ? _getAccentColor().withValues(alpha: 0.1)
+                : _getSurfaceColor(),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isSelected ? _getAccentColor() : _getBorderColor(),
@@ -417,7 +443,9 @@ class _SearchPageState extends State<SearchPage> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                border: Border.all(color: _getAccentColor().withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: _getAccentColor().withValues(alpha: 0.3),
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
@@ -457,11 +485,7 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
           ),
-          Icon(
-            Icons.chevron_right,
-            color: _getSecondaryTextColor(),
-            size: 24,
-          ),
+          Icon(Icons.chevron_right, color: _getSecondaryTextColor(), size: 24),
         ],
       ),
     );
@@ -520,7 +544,10 @@ class _SearchPageState extends State<SearchPage> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: _getAccentColor().withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
@@ -549,7 +576,6 @@ class _SearchPageState extends State<SearchPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      // TODO: Play audio
                     },
                     icon: Icon(
                       Icons.play_arrow,
@@ -559,7 +585,6 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      // TODO: Add to bookmark
                       await _dbHelper.addBookmark(
                         verse['surahNumber'],
                         verse['surahName'],
@@ -578,7 +603,6 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   IconButton(
                     onPressed: () {
-                      // TODO: Share
                     },
                     icon: Icon(
                       Icons.share,
@@ -603,9 +627,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           const SizedBox(height: 12),
           // Translation
-          RichText(
-            text: _buildHighlightedText(verse['translation'], _query),
-          ),
+          RichText(text: _buildHighlightedText(verse['translation'], _query)),
         ],
       ),
     );

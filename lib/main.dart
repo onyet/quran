@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'splash_screen.dart';
@@ -18,7 +17,13 @@ void main() async {
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('id'), Locale('tr'), Locale('fr'), Locale('ar')],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('id'),
+        Locale('tr'),
+        Locale('fr'),
+        Locale('ar'),
+      ],
       path: 'assets/lang',
       fallbackLocale: const Locale('en'),
       child: const MyApp(),
@@ -34,20 +39,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.dark; // Default to dark
+  final ThemeMode _themeMode = ThemeMode.dark; // Default to dark
   // final DatabaseHelper _dbHelper = DatabaseHelper(); // Temporarily disabled for debugging
 
   @override
   void initState() {
     super.initState();
     // _loadThemeMode(); // Temporarily disabled for debugging
-  }
-
-  void _toggleTheme() {
-    setState(() {
-      _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-    });
-    // _saveThemeMode(_themeMode == ThemeMode.dark); // Temporarily disabled for debugging
   }
 
   @override

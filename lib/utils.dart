@@ -7,7 +7,11 @@ class AppUtils {
   // Arabic numerals conversion
   static String toArabicNumerals(int number) {
     const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    return number.toString().split('').map((digit) => arabicDigits[int.parse(digit)]).join();
+    return number
+        .toString()
+        .split('')
+        .map((digit) => arabicDigits[int.parse(digit)])
+        .join();
   }
 
   // Format number based on current language
@@ -63,7 +67,10 @@ class AppUtils {
     return isDark ? const Color(0xFF4CE619) : const Color(0xFF2C2C2C);
   }
 
-  static Color getBackgroundColor(BuildContext context, [ThemeMode? themeMode]) {
+  static Color getBackgroundColor(
+    BuildContext context, [
+    ThemeMode? themeMode,
+  ]) {
     final isDark = themeMode == ThemeMode.dark;
     return isDark ? const Color(0xFF152111) : Colors.white;
   }
@@ -83,8 +90,13 @@ class AppUtils {
     return isDark ? Colors.white : const Color(0xFF2C2C2C);
   }
 
-  static Color getSecondaryTextColor(BuildContext context, [ThemeMode? themeMode]) {
+  static Color getSecondaryTextColor(
+    BuildContext context, [
+    ThemeMode? themeMode,
+  ]) {
     final isDark = themeMode == ThemeMode.dark;
-    return isDark ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF666666);
+    return isDark
+        ? Colors.white.withValues(alpha: 0.6)
+        : const Color(0xFF666666);
   }
 }

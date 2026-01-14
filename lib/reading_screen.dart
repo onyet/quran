@@ -36,7 +36,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   String _formatArabicNumber(int number) {
     const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    return number.toString().split('').map((digit) => arabicDigits[int.parse(digit)]).join();
+    return number
+        .toString()
+        .split('')
+        .map((digit) => arabicDigits[int.parse(digit)])
+        .join();
   }
 
   @override
@@ -74,9 +78,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
         _isLoading = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('error_loading_surah'.tr())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('error_loading_surah'.tr())));
       }
     }
   }
@@ -93,17 +97,25 @@ class _ReadingScreenState extends State<ReadingScreen> {
     }
   }
 
-  Color _getBackgroundColor() => _isDarkMode ? const Color(0xFF152111) : Colors.white;
-  Color _getSurfaceColor() => _isDarkMode ? const Color(0xFF1E261C) : Colors.grey.shade50;
+  Color _getBackgroundColor() =>
+      _isDarkMode ? const Color(0xFF152111) : Colors.white;
+  Color _getSurfaceColor() =>
+      _isDarkMode ? const Color(0xFF1E261C) : Colors.grey.shade50;
   Color _getTextColor() => _isDarkMode ? Colors.white : Colors.black87;
-  Color _getSecondaryTextColor() => _isDarkMode ? Colors.white70 : Colors.black54;
+  Color _getSecondaryTextColor() =>
+      _isDarkMode ? Colors.white70 : Colors.black54;
   Color _getAccentColor() => const Color(0xFF4CE619);
 
   @override
   Widget build(BuildContext context) {
     final chapter = AlQuran.chapter(widget.surahNumber);
-    final surahType = chapter.revelationPlace == ChapterRevelationPlace.makkah ? 'makkiyah'.tr() : 'madaniyah'.tr();
-    final translatedName = AppUtils.decodeHtmlEntities(chapter.translatedName[_getTranslationType().languageCode] ?? chapter.nameSimple);
+    final surahType = chapter.revelationPlace == ChapterRevelationPlace.makkah
+        ? 'makkiyah'.tr()
+        : 'madaniyah'.tr();
+    final translatedName = AppUtils.decodeHtmlEntities(
+      chapter.translatedName[_getTranslationType().languageCode] ??
+          chapter.nameSimple,
+    );
 
     return Scaffold(
       backgroundColor: _getBackgroundColor(),
@@ -155,7 +167,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 const SizedBox(height: 8),
                 // Meta info: verses count and type
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: _getAccentColor().withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
@@ -231,9 +246,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             Align(
                               alignment: Alignment.topRight,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: _getAccentColor().withValues(alpha: 0.1),
+                                  color: _getAccentColor().withValues(
+                                    alpha: 0.1,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -249,7 +269,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             const SizedBox(height: 8),
                             // Arabic text - right aligned
                             Html(
-                              data: '<div style="text-align: right; font-family: \'Noto Naskh Arabic\', serif; font-size: 20px; line-height: 2.0; color: #${_getTextColor().toARGB32().toRadixString(16).substring(2)};">${AppUtils.decodeHtmlEntities(verse.text)}</div>',
+                              data:
+                                  '<div style="text-align: right; font-family: \'Noto Naskh Arabic\', serif; font-size: 20px; line-height: 2.0; color: #${_getTextColor().toARGB32().toRadixString(16).substring(2)};">${AppUtils.decodeHtmlEntities(verse.text)}</div>',
                               style: {
                                 "div": Style(
                                   textAlign: TextAlign.right,
@@ -265,10 +286,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             Builder(
                               builder: (context) {
                                 try {
-                                  final translation = AlQuran.translation(_getTranslationType(), verse.verseKey).text;
+                                  final translation = AlQuran.translation(
+                                    _getTranslationType(),
+                                    verse.verseKey,
+                                  ).text;
                                   if (translation.isNotEmpty) {
                                     return Html(
-                                      data: '<div style="text-align: left; font-size: 16px; line-height: 1.5; color: #${_getSecondaryTextColor().toARGB32().toRadixString(16).substring(2)};">${AppUtils.decodeHtmlEntities(translation)}</div>',
+                                      data:
+                                          '<div style="text-align: left; font-size: 16px; line-height: 1.5; color: #${_getSecondaryTextColor().toARGB32().toRadixString(16).substring(2)};">${AppUtils.decodeHtmlEntities(translation)}</div>',
                                       style: {
                                         "div": Style(
                                           textAlign: TextAlign.left,
@@ -346,13 +371,22 @@ class _ReadingScreenState extends State<ReadingScreen> {
                       if (widget.surahNumber > 1)
                         ElevatedButton.icon(
                           onPressed: () {
-                            final prevChapter = AlQuran.chapter(widget.surahNumber - 1);
+                            final prevChapter = AlQuran.chapter(
+                              widget.surahNumber - 1,
+                            );
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) => ReadingScreen(
                                   surahNumber: widget.surahNumber - 1,
-                                  surahName: AppUtils.decodeHtmlEntities(prevChapter.translatedName[_getTranslationType().languageCode] ?? prevChapter.nameSimple),
-                                  themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                                  surahName: AppUtils.decodeHtmlEntities(
+                                    prevChapter
+                                            .translatedName[_getTranslationType()
+                                            .languageCode] ??
+                                        prevChapter.nameSimple,
+                                  ),
+                                  themeMode: _isDarkMode
+                                      ? ThemeMode.dark
+                                      : ThemeMode.light,
                                 ),
                               ),
                             );
@@ -361,7 +395,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                           label: Text('previous_surah'.tr()),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _getAccentColor(),
-                            foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                            foregroundColor: _isDarkMode
+                                ? const Color(0xFF152111)
+                                : Colors.white,
                           ),
                         )
                       else
@@ -369,13 +405,22 @@ class _ReadingScreenState extends State<ReadingScreen> {
                       if (widget.surahNumber < 114)
                         ElevatedButton.icon(
                           onPressed: () {
-                            final nextChapter = AlQuran.chapter(widget.surahNumber + 1);
+                            final nextChapter = AlQuran.chapter(
+                              widget.surahNumber + 1,
+                            );
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) => ReadingScreen(
                                   surahNumber: widget.surahNumber + 1,
-                                  surahName: AppUtils.decodeHtmlEntities(nextChapter.translatedName[_getTranslationType().languageCode] ?? nextChapter.nameSimple),
-                                  themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                                  surahName: AppUtils.decodeHtmlEntities(
+                                    nextChapter
+                                            .translatedName[_getTranslationType()
+                                            .languageCode] ??
+                                        nextChapter.nameSimple,
+                                  ),
+                                  themeMode: _isDarkMode
+                                      ? ThemeMode.dark
+                                      : ThemeMode.light,
                                 ),
                               ),
                             );
@@ -384,7 +429,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                           label: Text('next_surah'.tr()),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _getAccentColor(),
-                            foregroundColor: _isDarkMode ? const Color(0xFF152111) : Colors.white,
+                            foregroundColor: _isDarkMode
+                                ? const Color(0xFF152111)
+                                : Colors.white,
                           ),
                         )
                       else

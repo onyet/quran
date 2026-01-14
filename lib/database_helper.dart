@@ -17,11 +17,7 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'quran.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -62,7 +58,12 @@ class DatabaseHelper {
   }
 
   // Bookmark methods
-  Future<int> addBookmark(int surahNumber, String surahName, int verseNumber, String verseText) async {
+  Future<int> addBookmark(
+    int surahNumber,
+    String surahName,
+    int verseNumber,
+    String verseText,
+  ) async {
     final db = await database;
     return await db.insert('bookmarks', {
       'surah_number': surahNumber,
@@ -94,7 +95,12 @@ class DatabaseHelper {
   }
 
   // Last read methods
-  Future<int> saveLastRead(int surahNumber, String surahName, int verseNumber, String verseText) async {
+  Future<int> saveLastRead(
+    int surahNumber,
+    String surahName,
+    int verseNumber,
+    String verseText,
+  ) async {
     final db = await database;
 
     // Delete existing last read
@@ -124,11 +130,10 @@ class DatabaseHelper {
   // Settings methods
   Future<void> saveSetting(String key, String value) async {
     final db = await database;
-    await db.insert(
-      'settings',
-      {'key': key, 'value': value},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert('settings', {
+      'key': key,
+      'value': value,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<String?> getSetting(String key) async {
