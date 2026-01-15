@@ -13,7 +13,7 @@ A Flutter application for reading the Quran with offline support and multi-langu
 
 This project uses the following libraries:
 
-- [alfurqan](https://pub.dev/packages/alfurqan) - Offline Quran verses, translations, juzs and chapters
+- [quran](https://pub.dev/packages/quran) - Quran text, translations, audio URLs, and related utilities
 - [easy_localization](https://pub.dev/packages/easy_localization) - Easy and Fast internationalizing and localization
 - [shared_preferences](https://pub.dev/packages/shared_preferences) - Flutter plugin for reading and writing simple key-value pairs
 - [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) - A package which simplifies the task of updating your Flutter app's launcher icon

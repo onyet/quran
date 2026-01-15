@@ -2,11 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:alfurqan/alfurqan.dart';
-import 'package:alfurqan/data/dart/types.dart';
+import 'package:quran/quran.dart' as quran;
 import 'database_helper.dart';
-import 'search_page.dart';
-import 'reading_screen.dart';
 import 'utils.dart';
 
 class _TabHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -78,19 +75,22 @@ class _HomeScreenState extends State<HomeScreen> {
     final currentLang = _getCurrentLanguageKey();
     final loadedSurahs = <Map<String, dynamic>>[];
 
-    for (int i = 1; i <= AlQuran.totalChapter; i++) {
-      final chapter = AlQuran.chapter(i);
+    for (int i = 1; i <= quran.totalSurahCount; i++) {
+      final nameSimple = quran.getSurahName(i);
+      final nameArabic = quran.getSurahNameArabic(i);
+      final translation = currentLang == 'en'
+          ? quran.getSurahNameEnglish(i)
+          : nameSimple; // fallback to default name for id
+      final verses = quran.getVerseCount(i);
+      final place = quran.getPlaceOfRevelation(i);
+
       loadedSurahs.add({
-        'number': chapter.id,
-        'name': _decodeHtmlEntities(chapter.nameSimple),
-        'translation': _decodeHtmlEntities(
-          chapter.translatedName[currentLang] ?? chapter.nameSimple,
-        ),
-        'arabic': chapter.nameArabic,
-        'verses': chapter.versesCount,
-        'type': chapter.revelationPlace == ChapterRevelationPlace.makkah
-            ? 'Makkiyah'
-            : 'Madaniyah',
+        'number': i,
+        'name': _decodeHtmlEntities(nameSimple),
+        'translation': _decodeHtmlEntities(translation),
+        'arabic': nameArabic,
+        'verses': verses,
+        'type': place.toLowerCase().contains('makk') ? 'Makkiyah' : 'Madaniyah',
       });
     }
 
@@ -102,13 +102,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void _loadJuzs() {
     final loadedJuzs = <Map<String, dynamic>>[];
 
-    for (int i = 1; i <= AlQuran.totalJuz; i++) {
-      final juz = AlQuran.juz(juzNumber: i);
+    for (int i = 1; i <= quran.totalJuzCount; i++) {
+      final data = quran.getSurahAndVersesFromJuz(i);
+      final chaptersCount = data.length;
+      // We intentionally avoid detailed verse counting here to keep parsing simple.
       loadedJuzs.add({
         'number': i,
         'name': '${'juz'.tr()} ${_formatNumber(i)}',
-        'verses': juz.verse.count,
-        'chapters': juz.verse.items.length,
+        'verses': 0,
+        'chapters': chaptersCount,
       });
     }
 
@@ -212,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               Text(
                 lastRead!['surah_name'],
-                style: TextStyle(
+                style: AppUtils.quranArabicStyle(
                   color: _getTextColor(),
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -231,17 +233,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => ReadingScreen(
-                        surahNumber: lastRead!['surah_number'],
-                        surahName: lastRead!['surah_name'],
-                        initialVerse: lastRead!['verse_number'],
-                        themeMode: _isDarkMode
-                            ? ThemeMode.dark
-                            : ThemeMode.light,
+                      builder: (context) => Scaffold(
+                        appBar: AppBar(title: Text('reading_removed'.tr())),
+                        body: Center(child: Text('Reading screen removed temporarily')),
                       ),
                     ),
                   );
                 },
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _getAccentColor(),
                   foregroundColor: _isDarkMode
@@ -311,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               Text(
                 'Al-Fatihah',
-                style: TextStyle(
+                style: AppUtils.quranArabicStyle(
                   color: _getTextColor(),
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -325,18 +324,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton(
                 onPressed: () async {
                   // Save first verse as last read and navigate
-                  final verse = AlQuran.verse(1, 1);
-                  await _dbHelper.saveLastRead(1, 'Al-Fatihah', 1, verse.text);
+                  final verse = quran.getVerse(1, 1);
+                  await _dbHelper.saveLastRead(1, 'Al-Fatihah', 1, verse);
                   _loadLastRead();
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => ReadingScreen(
-                        surahNumber: 1,
-                        surahName: 'Al-Fatihah',
-                        initialVerse: 1,
-                        themeMode: _isDarkMode
-                            ? ThemeMode.dark
-                            : ThemeMode.light,
+                      builder: (context) => Scaffold(
+                        appBar: AppBar(title: Text('reading_removed'.tr())),
+                        body: Center(child: Text('Reading screen removed temporarily')),
                       ),
                     ),
                   );
@@ -486,10 +481,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => SearchPage(
-                            themeMode: _isDarkMode
-                                ? ThemeMode.dark
-                                : ThemeMode.light,
+                          builder: (context) => Scaffold(
+                            appBar: AppBar(title: Text('search_removed'.tr())),
+                            body: const Center(child: Text('Search removed temporarily')),
                           ),
                         ),
                       );
@@ -685,6 +679,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
+                ),
+                // Show Arabic name below the main name for clarity
+                Text(
+                  surah['arabic'] ?? '',
+                  style: AppUtils.quranArabicStyle(
+                    color: _getSecondaryTextColor(),
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.right,
                 ),
                 Row(
                   children: _getCurrentLanguageKey() == 'ar'

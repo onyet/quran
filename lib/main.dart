@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:io' show Platform;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'splash_screen.dart';
 
 void main() async {
@@ -20,9 +21,6 @@ void main() async {
       supportedLocales: const [
         Locale('en'),
         Locale('id'),
-        Locale('tr'),
-        Locale('fr'),
-        Locale('ar'),
       ],
       path: 'assets/lang',
       fallbackLocale: const Locale('en'),
@@ -59,6 +57,8 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4CE619)),
         brightness: Brightness.light,
         useMaterial3: true,
+        // Use Amiri for general text in the app
+        textTheme: GoogleFonts.amiriTextTheme(),
       ),
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(
@@ -66,6 +66,8 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.dark,
         ),
         brightness: Brightness.dark,
+        // Use Amiri in dark theme as well
+        textTheme: GoogleFonts.amiriTextTheme(ThemeData.dark().textTheme),
       ),
       themeMode: _themeMode,
       home: const SplashScreen(),

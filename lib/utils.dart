@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:alfurqan/constant.dart';
+import 'package:quran/quran.dart' as quran;
 import 'package:html/parser.dart' as html;
+import 'package:google_fonts/google_fonts.dart';
 
 class AppUtils {
   // Arabic numerals conversion
@@ -25,7 +26,7 @@ class AppUtils {
     return document.body?.text ?? text;
   }
 
-  // Get current language code based on locale
+  // Get current language code based on locale (limit to 'id' and 'en')
   static String getCurrentLanguageCode(BuildContext context) {
     final locale = context.locale;
     switch (locale.languageCode) {
@@ -33,31 +34,21 @@ class AppUtils {
         return 'id';
       case 'en':
         return 'en';
-      case 'tr':
-        return 'tr';
-      case 'fr':
-        return 'fr';
-      case 'ar':
-        return 'ar';
       default:
         return 'en';
     }
   }
 
-  // Get current translation type based on locale
-  static TranslationType getCurrentTranslationType(BuildContext context) {
+  // Get current translation object for the quran package
+  static quran.Translation getCurrentTranslation(BuildContext context) {
     final locale = context.locale;
     switch (locale.languageCode) {
       case 'id':
-        return TranslationType.idIndonesianIslamicAffairsMinistry;
+        return quran.Translation.indonesian;
       case 'en':
-        return TranslationType.enMASAbdelHaleem;
-      case 'tr':
-        return TranslationType.trDarAlSalamCenter;
-      case 'fr':
-        return TranslationType.frMontadaIslamicFoundation;
+        return quran.Translation.enSaheeh;
       default:
-        return TranslationType.enMASAbdelHaleem;
+        return quran.Translation.enSaheeh;
     }
   }
 
@@ -98,5 +89,15 @@ class AppUtils {
     return isDark
         ? Colors.white.withValues(alpha: 0.6)
         : const Color(0xFF666666);
+  }
+
+  // Quran Arabic text style helper using Amiri Quran font
+  static TextStyle quranArabicStyle({Color? color, double fontSize = 20.0, FontWeight? fontWeight}) {
+    // Fallback to Amiri if Amiri Quran is not available in the google_fonts package
+    return GoogleFonts.amiri(
+      color: color,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+    );
   }
 }
