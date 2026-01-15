@@ -105,11 +105,66 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int i = 1; i <= quran.totalJuzCount; i++) {
       final data = quran.getSurahAndVersesFromJuz(i);
       final chaptersCount = data.length;
-      // We intentionally avoid detailed verse counting here to keep parsing simple.
+      int versesCount = 0;
+
+      // Robust parsing: handle list/map/string forms and account for the mapping key (surah index)
+      for (final entry in data.entries) {
+        final keySurah = _parseToInt(entry.key);
+        final val = entry.value;
+
+        // Directly handle list forms first (they commonly appear as [startVerse, endVerse])
+        if (val is List && val.length >= 2) {
+          final sVerse = _parseToInt(val[0]);
+          final eVerse = _parseToInt(val[1]);
+          final surah = keySurah > 0 ? keySurah : 0;
+          if (surah >= 1 && sVerse > 0 && eVerse >= sVerse) {
+            versesCount += (eVerse - sVerse + 1);
+            continue;
+          }
+        }
+
+        // Fallback: numeric extraction from string representation
+        final valStr = '${entry.key}:${entry.value}';
+        final nums = RegExp(r'\d+').allMatches(valStr).map((m) => int.parse(m.group(0)!)).toList();
+        if (nums.isEmpty) continue;
+
+        // If the first number equals the key surah, skip it when parsing verses
+        int idx = 0;
+        if (keySurah > 0 && nums.isNotEmpty && nums[0] == keySurah) idx = 1;
+
+        final remaining = nums.length - idx;
+        if (valStr.contains(':') && remaining >= 4) {
+          final sSurah = nums[idx + 0];
+          final sVerse = nums[idx + 1];
+          final eSurah = nums[idx + 2];
+          final eVerse = nums[idx + 3];
+
+          if (sSurah == eSurah) {
+            if (eVerse >= sVerse) versesCount += (eVerse - sVerse + 1);
+          } else if (sSurah < eSurah) {
+            versesCount += (quran.getVerseCount(sSurah) - sVerse + 1);
+            for (int s = sSurah + 1; s < eSurah; s++) {
+              versesCount += quran.getVerseCount(s);
+            }
+            versesCount += eVerse;
+          }
+        } else if (remaining >= 2) {
+          final sVerse = nums[idx + 0];
+          final eVerse = nums[idx + 1];
+          final surah = keySurah > 0 ? keySurah : (remaining >= 3 ? nums[idx + 2] : 1);
+          final max = (surah >= 1 && surah <= quran.totalSurahCount) ? quran.getVerseCount(surah) : 0;
+          final clampedStart = sVerse <= 0 ? 1 : (sVerse > max ? max : sVerse);
+          final clampedEnd = eVerse <= 0 ? max : (eVerse > max ? max : eVerse);
+          if (clampedEnd >= clampedStart) versesCount += (clampedEnd - clampedStart + 1);
+        } else if (remaining == 1) {
+          versesCount += 1;
+        }
+      }
+
       loadedJuzs.add({
         'number': i,
         'name': '${'juz'.tr()} ${_formatNumber(i)}',
-        'verses': 0,
+        'verses': versesCount,
         'chapters': chaptersCount,
       });
     }
@@ -117,6 +172,14 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       juzs = loadedJuzs;
     });
+  }
+
+  int _parseToInt(dynamic v) {
+    if (v == null) return 0;
+    if (v is int) return v;
+    if (v is num) return v.toInt();
+    if (v is String) return int.tryParse(v.trim()) ?? 0;
+    return 0;
   }
 
   void _loadBookmarks() async {
